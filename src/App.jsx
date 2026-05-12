@@ -7,16 +7,27 @@ import { useState } from "react";
 
 function App() {
   const [screen, setScreen] = useState("start");
+  const [user, setUser] = useState({ name: "Guest", id: null });
+  const [lastScore, setLastScore] = useState(0);
+  // Bridge gamplay and leaderboard
+  const handleGameOver = (score) => {
+    setLastScore(score);
+    setScreen("leaderboard");
+  };
 
   return(
     <div className="body">
       <div className="game">
-        {screen === "start" && (
-          <Start setScreen={setScreen} />
-        )}
+        {screen === "start" && <Start setScreen={setScreen} user={user} />}
+        
         {screen === "game" && (
-          <GamePlay setScreen={setScreen}/>
-        )}  
+          <GamePlay 
+            setScreen={setScreen} 
+            user={user} 
+            onGameOver={handleGameOver} // Integration logic
+          />
+        )}
+
         {screen === "leaderboard" && (
           <Leaderboard setScreen={setScreen}/>
         )}
