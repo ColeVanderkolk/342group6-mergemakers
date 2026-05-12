@@ -1,4 +1,6 @@
-import GamePlay from "./components/GamePlay.jsx";
+import GamePlay from "./components/GamePlay/GamePlay.jsx";
+import PlayerInfo from "./components/PlayerInfo/PlayerInfo.jsx";
+import Leaderboard from "./components/Leaderboard/Leaderboard.jsx";
 import Start from "./components/Start.jsx";
 import "./App.css";
 import { useState } from "react";
@@ -14,6 +16,12 @@ function App() {
         )}
         {screen === "game" && (
           <GamePlay setScreen={setScreen}/>
+        )}  
+        {screen === "leaderboard" && (
+          <Leaderboard setScreen={setScreen}/>
+        )}
+        {screen === "playerInfo" && (
+          <PlayerInfo setScreen={setScreen}/>
         )}
       </div>
     </div>
