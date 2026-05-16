@@ -15,7 +15,7 @@ function Leaderboard({setScreen}) {
           <p style={{fontSize:30}}>LeaderBoard</p>
       <ul style={{listStyleType:'none'}}>
         <div style={{columnCount:2,fontSize:25}}><li>Player</li> <li>Score</li></div>
-        {leaderBoardList.map((player,index) => (<li key = {index}>
+          {leaderBoardList.map((player,index) => (<li key = {index}>
           <ul style={{listStyleType:'none', }}>
             <div style={{columnCount:2}}>
               <li>{player.userName}</li> <li>{player.Score}</li>
