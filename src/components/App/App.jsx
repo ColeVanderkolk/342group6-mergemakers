@@ -1,9 +1,9 @@
 import {Routes,Route} from 'react-router-dom'
-import Asteroids from './components/Asteroids/Asteroids.jsx';
-import HomePage from './pages/HomePage.jsx';
-import Signup from './pages/Signup.jsx';
-import Login from './pages/Login.jsx';
-import PageNotFound from './pages/PageNotFound.jsx';
+import Asteroids from '../Asteroids/Asteroids.jsx';
+import HomePage from '../../pages/HomePage.jsx';
+import Signup from '../../pages/Signup.jsx';
+import Login from '../../pages/Login.jsx';
+import PageNotFound from '../../pages/PageNotFound.jsx';
 import "./App.css";
 
 

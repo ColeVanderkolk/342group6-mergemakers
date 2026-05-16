@@ -1,5 +1,5 @@
 import {useState} from "react";
-import "../App.css";
+import "./App/App.css";
 import playButton from "./play_button.png";
 import playerButton from "./player_info.png";
 import leaderBoard from "./leader_board.png";
