@@ -2,7 +2,9 @@
 import Image from '../GamePlay/sprites/Ship_active.png';
 import './Game.css';
 
-export default function Game() {
+
+//game object should contain [image,name,description,page link]
+export default function Game({game}) {
 
     return (
         <div className="Game" style={{columnCount:1}}>
