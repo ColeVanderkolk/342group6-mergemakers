@@ -1,12 +1,25 @@
-import GamePlay from "./components/GamePlay/GamePlay.jsx";
-import PlayerInfo from "./components/PlayerInfo/PlayerInfo.jsx";
-import Leaderboard from "./components/Leaderboard/Leaderboard.jsx";
-import Start from "./components/Start.jsx";
-import "./App.css";
-import { useState } from "react";
+import {Routes,Route} from 'react-router-dom'
 import Asteroids from './components/Asteroids/Asteroids.jsx';
+import HomePage from './pages/HomePage.jsx';
+import Signup from './pages/Signup.jsx';
+import Login from './pages/Login.jsx';
+import PageNotFound from './pages/PageNotFound.jsx';
+import "./App.css";
+
 
 function App() {
- return( <Asteroids/>)
+ return( 
+  <div>
+  <>
+  <Routes>
+      <Route path ="/" element={<HomePage/>}/>
+      <Route path="/asteroids" element={<Asteroids/>}/>
+      <Route path ="/signup" element={<Signup/>}/>
+      <Route path="/login" element={<Login/>}/>
+      <Route path ="*" element={<PageNotFound/>}/>
+  </Routes>
+  </>
+  </div>
+)
 }
 export default App;
