@@ -5,9 +5,9 @@ import Start from "../Start.jsx";
 import { useState } from "react";
 function Asteroids() {
   const [screen, setScreen] = useState("start");
-  const [user, setUser] = useState({ name: "Guest", id: null });
-  const [lastScore, setLastScore] = useState(0);
-  // Bridge gamplay and leaderboard
+  const [user] = useState({ name: "Guest", id: null });
+  const [lastScore, setLastScore] = useState(null);
+
   const handleGameOver = (score) => {
     setLastScore(score);
     setScreen("leaderboard");
@@ -17,17 +17,17 @@ function Asteroids() {
     <div className="body">
       <div className="game">
         {screen === "start" && <Start setScreen={setScreen} user={user} />}
-        
+
         {screen === "game" && (
-          <GamePlay 
-            setScreen={setScreen} 
-            user={user} 
-            onGameOver={handleGameOver} // Integration logic
+          <GamePlay
+            setScreen={setScreen}
+            user={user}
+            onGameOver={handleGameOver}
           />
         )}
 
         {screen === "leaderboard" && (
-          <Leaderboard setScreen={setScreen}/>
+          <Leaderboard setScreen={setScreen} lastScore={lastScore} />
         )}
         {screen === "playerInfo" && (
           <PlayerInfo setScreen={setScreen}/>

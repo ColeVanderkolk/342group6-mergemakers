@@ -1,4 +1,3 @@
-import {useState} from "react";
 import "./App/App.css";
 import playButton from "./play_button.png";
 import playerButton from "./player_info.png";
