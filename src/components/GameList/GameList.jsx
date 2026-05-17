@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 
 import asteroidImage from '../GamePlay/sprites/Ship_active.png';
 import brickImage from '../GamePlay/sprites/BrickBreaker.png';
+import pongImage from '../GamePlay/sprites/pong_btn_image.png';
+
+import './GameList.css'
 
 function GameList() {
 
@@ -11,6 +14,11 @@ function GameList() {
             title: 'Asteroids',
             image: asteroidImage,
             gameLink: '/asteroids'
+        },
+        {
+            title: 'Pong',
+            image: pongImage,
+            gameLink: '/pong'
         },
         {
             title: 'Brickbreaker',
