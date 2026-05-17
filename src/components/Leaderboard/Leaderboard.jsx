@@ -1,28 +1,39 @@
 import {useState} from 'react';
+import React from 'react'
+import './Leaderboard.css'
+import Asteroid from '../GamePlay/sprites/Ship_active.png';
+import BrickBreaker from '../GamePlay/sprites/BrickBreaker.png';
+
+
 
 const example= {
   userName: "example_Player",
   Score: 2000,
 }
 
-const leaderBoardList = [example,example,example,example,example];
-
+const leaderBoardList = [example,example,example,example];
+leaderBoardList.sort();
 
 
 function Leaderboard({setScreen}) {
   return (
-    <div> 
-          <p style={{fontSize:30}}>LeaderBoard</p>
-      <ul style={{listStyleType:'none'}}>
-        <div style={{columnCount:2,fontSize:25}}><li>Player</li> <li>Score</li></div>
-          {leaderBoardList.map((player,index) => (<li key = {index}>
-          <ul style={{listStyleType:'none', }}>
-            <div style={{columnCount:2}}>
-              <li>{player.userName}</li> <li>{player.Score}</li>
-            </div>
-          </ul>
+    <div>
+        <div className = 'LeaderBoardButtons'>
+          <button></button>
+          <button></button>
+          <button></button>
+        </div>
+      <div className='LeaderBoardRow'>
+      <p style={{fontSize:30}}>LeaderBoard</p>
+      <ul>
+          {leaderBoardList.map((player,index) => (
+          <li key = {index}>
+            <div className = {index === 0 ? 'First' : 'Last'}>
+              <text>{'#' + (index +1)}</text> <text style={{marginLeft:'2rem',marginRight:'10rem'}}>{player.userName}</text> <text>{player.Score}</text>
+              </div>
           </li>))}
       </ul>
+      </div>
     </div>
   );
 }

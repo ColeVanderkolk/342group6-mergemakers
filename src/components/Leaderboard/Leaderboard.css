@@ -1,0 +1,48 @@
+.LeaderBoard {
+    align-items:left;
+    justify-content:left;
+    flex-direction:row;
+}
+
+.LeaderBoardRow {
+    align-items:center;
+    display:flex;
+    flex-direction: column;
+    justify-content:center;
+    background-color: #3b2f72;
+    font-family: Poppins, sans-serif;
+    color: #fff;
+}
+.LeaderBoard ul {
+    list-style-type: none;
+}
+
+.LeaderBoardButtons button {
+    height:2rem;
+    width:2.5rem;
+    align-items: left;
+    align-self:left;
+}
+
+.LeaderBoardButtons {
+    height:2rem;
+    width:2.5rem;
+    list-style-type:none;
+    flex-direction: row;
+    display:inline;
+    width:2.5rem;
+    text-align: left;
+}
+.LeaderBoard img {
+    width: 1rem;
+}
+.First {
+    color: rgb(133, 98, 9);
+    background-color: #d8b012;
+    font-family: Poppins, sans-serif;
+
+}
+
+.Last {
+    color:yellow;
+}

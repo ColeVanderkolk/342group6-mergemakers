@@ -10,7 +10,7 @@ export default function Game({game}) {
         <div className="Game" style={{columnCount:1}}>
             <img className="Game-Image" src={Image} alt = ""/>
             <p className = 'Game-Title'>Asteroids</p>
-            <text className = 'Game-Description'>survive for as long as possible in the asteroid belt!</text>
+            <p className = 'Game-Description'>survive for as long as possible in the asteroid belt!</p>
         </div>
     )
 }
