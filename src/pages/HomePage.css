@@ -1,3 +1,9 @@
 .game-link {
     text-decoration: none;
 }
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #1E1E1E;
+}

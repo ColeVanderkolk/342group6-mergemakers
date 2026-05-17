@@ -1,39 +1,36 @@
-import {useState} from 'react';
-import React from 'react'
-import './Leaderboard.css'
-import Asteroid from '../GamePlay/sprites/Ship_active.png';
-import BrickBreaker from '../GamePlay/sprites/BrickBreaker.png';
-
-
-
-const example= {
+const example = {
   userName: "example_Player",
   Score: 2000,
-}
+};
 
-const leaderBoardList = [example,example,example,example];
-leaderBoardList.sort();
+const leaderBoardList = [example, example, example, example, example];
 
-
-function Leaderboard({setScreen}) {
+function Leaderboard({ setScreen, lastScore }) {
   return (
-    <div>
-        <div className = 'LeaderBoardButtons'>
-          <button></button>
-          <button></button>
-          <button></button>
-        </div>
-      <div className='LeaderBoardRow'>
-      <p style={{fontSize:30}}>LeaderBoard</p>
-      <ul>
-          {leaderBoardList.map((player,index) => (
-          <li key = {index}>
-            <div className = {index === 0 ? 'First' : 'Last'}>
-              <text>{'#' + (index +1)}</text> <text style={{marginLeft:'2rem',marginRight:'10rem'}}>{player.userName}</text> <text>{player.Score}</text>
-              </div>
-          </li>))}
-      </ul>
-      </div>
+    <div style={{ color: 'white', padding: 20 }}>
+      <p style={{ fontSize: 30 }}>LeaderBoard</p>
+
+      {lastScore !== null && lastScore !== undefined && (
+        <p style={{ fontSize: 20 }}>Your last score: {lastScore}</p>
+      )}
+
+      <table style={{ margin: '0 auto', fontSize: 20, borderSpacing: '24px 4px' }}>
+        <thead>
+          <tr><th>Player</th><th>Score</th></tr>
+        </thead>
+        <tbody>
+          {leaderBoardList.map((player, index) => (
+            <tr key={index}>
+              <td>{player.userName}</td>
+              <td>{player.Score}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <button onClick={() => setScreen("start")} style={{ marginTop: 20 }}>
+        Back to Menu
+      </button>
     </div>
   );
 }
