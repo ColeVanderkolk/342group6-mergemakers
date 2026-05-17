@@ -1,16 +1,21 @@
 .Game {
     display:flex;
     flex-direction: column;
-    width: 5.66rem;
     align-items:center;
+    background-color: black;
+    width: 6rem;
+    height: 6rem; 
 }
+
+
 .Game-Image {
-  width: 1.66rem;
+  width: 4rem;
 }
 
 .Game-Title {
     font-size: 1rem;
     margin-bottom: .01rem;
+    color: white;
 }
 
 .Game-Description {
