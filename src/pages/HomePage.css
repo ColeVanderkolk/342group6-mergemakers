@@ -1,3 +1,11 @@
 .game-link {
     text-decoration: none;
 }
+
+.game-row {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    justify-content: center;
+    align-items: center;
+}

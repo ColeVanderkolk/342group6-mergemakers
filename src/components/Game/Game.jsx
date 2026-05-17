@@ -1,5 +1,3 @@
-
-import Image from '../GamePlay/sprites/Ship_active.png';
 import './Game.css';
 
 
@@ -7,10 +5,9 @@ import './Game.css';
 export default function Game({game}) {
 
     return (
-        <div className="Game" style={{columnCount:1}}>
-            <img className="Game-Image" src={Image} alt = ""/>
-            <p className = 'Game-Title'>Asteroids</p>
-            <text className = 'Game-Description'>survive for as long as possible in the asteroid belt!</text>
+        <div className="Game">
+            <p className = 'Game-Title'>{game.title}</p>
+            <img className="Game-Image" src={game.image} alt = ""/>
         </div>
     )
 }
