@@ -9,3 +9,17 @@
 .game-link {
     display: inline-block;
 }
+
+.white-line {
+    width: 100%;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.title {
+    color: white;
+    font-weight: bold;
+    font-size: 30px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
