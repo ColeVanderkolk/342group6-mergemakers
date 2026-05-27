@@ -1,6 +1,7 @@
 import {Routes,Route} from 'react-router-dom'
 import Asteroids from '../Asteroids/Asteroids.jsx';
 import BrickBreaker from '../BrickBreaker/BrickBreaker.jsx';
+import Pong from '../Pong/Pong.jsx';
 import HomePage from '../../pages/HomePage.jsx';
 import Signup from '../../pages/Signup.jsx';
 import Login from '../../pages/Login.jsx';
@@ -16,6 +17,7 @@ function App() {
       <Route path ="/" element={<HomePage/>}/>
       <Route path="/asteroids" element={<Asteroids/>}/>
       <Route path="/brickbreaker" element={<BrickBreaker/>}/>
+      <Route path="/pong" element={<Pong/>}/>
       <Route path ="/signup" element={<Signup/>}/>
       <Route path="/login" element={<Login/>}/>
       <Route path ="*" element={<PageNotFound/>}/>

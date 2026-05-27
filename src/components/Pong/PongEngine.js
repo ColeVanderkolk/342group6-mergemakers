@@ -1,0 +1,118 @@
+export class Paddle {
+  constructor(type, canvasWidth, canvasHeight) {
+    this.canvasWidth = canvasWidth;
+    this.canvasHeight = canvasHeight;
+    this.width = 15;
+    this.height = 100;
+    this.type = type;
+    this.x = type === "player" ? canvasWidth - 30 : 15;
+    this.y = (canvasHeight - this.height) / 2;
+    this.speed = 8;
+  }
+
+  draw(ctx) {
+    ctx.fillStyle = "#0095DD";
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
+
+  reset() {
+    this.x = this.type === "player" ? this.canvasWidth - 30 : 15;
+    this.y = (this.canvasHeight - this.height) / 2;  
+  }
+}
+
+export class UserPaddle extends Paddle {
+  update(keys) {
+    // Move up
+    if ((keys['ArrowUp'] || keys['w']) && this.y > 0) {
+      this.y -= this.speed;
+    }
+    // Move down
+    if ( (keys['ArrowDown'] || keys['s']) && this.y < this.canvasHeight - this.height){
+      this.y += this.speed;
+    }
+  }
+}
+
+export class OppPaddle extends Paddle {
+  update(ball) {
+    const startOfRange = this.y + 10;
+    const endOfRange = this.y + this.height - 10;
+    if (ball.x < (this.canvasWidth / 2)){
+      if (ball.y < startOfRange){
+        this.y -= this.speed;
+      } else if (ball.y > endOfRange){
+        this.y += this.speed;
+      }
+    }
+  }
+}
+
+
+export class Ball {
+  constructor(canvasWidth, canvasHeight) {
+    this.canvasWidth = canvasWidth;
+    this.canvasHeight = canvasHeight;
+    this.x = canvasWidth / 2;
+    this.y = canvasHeight / 2;
+    this.radius = 8;
+    this.dx = 4;
+    const range = [-4, -3, -2, -1, 1, 2, 3, 4];
+    this.dy = range[Math.floor(Math.random() * range.length)];
+  }
+
+  draw(ctx) {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = "#FFF";
+    ctx.fill();
+    ctx.closePath();
+  }
+
+  reset() {
+    this.x = this.canvasWidth / 2;
+    this.y = this.canvasHeight / 2;
+    this.dx = 4;
+    const range = [-4, -3, -2, -1, 1, 2, 3, 4];
+    this.dy = range[Math.floor(Math.random() * range.length)];
+  }
+
+  update(paddle, onScore) {
+    this.x += this.dx;
+    this.y += this.dy;
+
+    // Bounce off top or bottom walls
+    if (this.y + this.radius > this.canvasHeight || this.y - this.radius < 0) {
+      this.dy = -this.dy;
+    }
+    
+    // Bounce off paddle
+    if (
+      paddle.type === "player" &&
+      this.x + this.radius > paddle.x &&
+      this.y > paddle.y &&
+      this.y < paddle.y + paddle.height
+    ) {
+      this.dx = -Math.abs(this.dx);
+    }
+
+    if (
+      paddle.type === "opp" &&
+      this.x - this.radius < paddle.x + paddle.width &&
+      this.y > paddle.y &&
+      this.y < paddle.y + paddle.height
+    ) {
+      this.dx = Math.abs(this.dx);
+    }
+
+    // If the paddle hits the right wall
+    if (this.x + this.radius > this.canvasWidth) {
+      onScore("left");
+    }
+    // if the paddle hits the left wall
+    if (this.x - this.radius < 0) {
+      onScore("right");
+    }
+  }
+  
+}
