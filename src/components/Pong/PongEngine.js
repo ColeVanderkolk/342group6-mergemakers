@@ -36,8 +36,8 @@ export class UserPaddle extends Paddle {
 
 export class OppPaddle extends Paddle {
   update(ball) {
-    const startOfRange = this.y + 10;
-    const endOfRange = this.y + this.height - 10;
+    const startOfRange = this.y;
+    const endOfRange = this.y + this.height;
     if (ball.x < (this.canvasWidth / 2)){
       if (ball.y < startOfRange){
         this.y -= this.speed;
@@ -59,6 +59,7 @@ export class Ball {
     this.dx = 4;
     const range = [-4, -3, -2, -1, 1, 2, 3, 4];
     this.dy = range[Math.floor(Math.random() * range.length)];
+    this.speed = 2;
   }
 
   draw(ctx) {
@@ -77,30 +78,28 @@ export class Ball {
     this.dy = range[Math.floor(Math.random() * range.length)];
   }
 
-  update(paddle, onScore) {
-    this.x += this.dx;
-    this.y += this.dy;
+  update(userPaddle, oppPaddle, onScore) {
+    this.x += this.dx * this.speed;
+    this.y += this.dy * this.speed;
 
     // Bounce off top or bottom walls
     if (this.y + this.radius > this.canvasHeight || this.y - this.radius < 0) {
       this.dy = -this.dy;
     }
     
-    // Bounce off paddle
+    // Bounce off user paddle
     if (
-      paddle.type === "player" &&
-      this.x + this.radius > paddle.x &&
-      this.y > paddle.y &&
-      this.y < paddle.y + paddle.height
+      this.x + this.radius > userPaddle.x &&
+      this.y > userPaddle.y &&
+      this.y < userPaddle.y + userPaddle.height
     ) {
       this.dx = -Math.abs(this.dx);
     }
-
+    // Bounce of opponent paddle
     if (
-      paddle.type === "opp" &&
-      this.x - this.radius < paddle.x + paddle.width &&
-      this.y > paddle.y &&
-      this.y < paddle.y + paddle.height
+      this.x - this.radius < oppPaddle.x + oppPaddle.width &&
+      this.y > oppPaddle.y &&
+      this.y < oppPaddle.y + oppPaddle.height
     ) {
       this.dx = Math.abs(this.dx);
     }

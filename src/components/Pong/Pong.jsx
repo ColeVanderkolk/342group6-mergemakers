@@ -79,7 +79,7 @@ function Pong() {
         oppPaddle.update(ball);
         oppPaddle.draw(ctx);
         
-        ball.update(paddle, onScore);
+        ball.update(paddle, oppPaddle, onScore);
         ball.draw(ctx);
         // need more stuff
         animationId = window.requestAnimationFrame(render);
