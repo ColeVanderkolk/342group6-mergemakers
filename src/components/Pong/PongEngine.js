@@ -8,6 +8,7 @@ export class Paddle {
     this.x = type === "player" ? canvasWidth - 30 : 15;
     this.y = (canvasHeight - this.height) / 2;
     this.speed = 8;
+    this.offset = Math.random() * 60 - 30;
   }
 
   draw(ctx) {
@@ -18,6 +19,7 @@ export class Paddle {
   reset() {
     this.x = this.type === "player" ? this.canvasWidth - 30 : 15;
     this.y = (this.canvasHeight - this.height) / 2;  
+    this.offset = Math.random() * 60 - 30;
   }
 }
 
@@ -36,12 +38,15 @@ export class UserPaddle extends Paddle {
 
 export class OppPaddle extends Paddle {
   update(ball) {
-    const startOfRange = this.y;
-    const endOfRange = this.y + this.height;
-    if (ball.x < (this.canvasWidth / 2)){
-      if (ball.y < startOfRange){
+    const paddleCenter = this.y + this.height / 2;
+    const deadZone = 15;
+    const targetY = ball.y + this.offset;
+    const boundary = (this.canvasWidth / 2) - 100;
+    if (ball.x < boundary && ball.dx < 0
+      && this.height > 0 && this.height < this.canvasHeight){
+      if (targetY < paddleCenter - deadZone){
         this.y -= this.speed;
-      } else if (ball.y > endOfRange){
+      } else if (targetY > paddleCenter + deadZone){
         this.y += this.speed;
       }
     }
@@ -106,11 +111,11 @@ export class Ball {
 
     // If the paddle hits the right wall
     if (this.x + this.radius > this.canvasWidth) {
-      onScore("left");
+      onScore("right");
     }
     // if the paddle hits the left wall
     if (this.x - this.radius < 0) {
-      onScore("right");
+      onScore("left");
     }
   }
   
