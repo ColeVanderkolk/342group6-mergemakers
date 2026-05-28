@@ -12,7 +12,7 @@ export class Paddle {
   }
 
   draw(ctx) {
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = "#FFF";
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 
@@ -41,13 +41,20 @@ export class OppPaddle extends Paddle {
     const paddleCenter = this.y + this.height / 2;
     const deadZone = 15;
     const targetY = ball.y + this.offset;
-    const boundary = (this.canvasWidth / 2) - 100;
-    if (ball.x < boundary && ball.dx < 0
-      && this.height > 0 && this.height < this.canvasHeight){
+    const boundary = (this.canvasWidth / 2) - 80;
+    if (ball.x < boundary && ball.dx < 0){
       if (targetY < paddleCenter - deadZone){
         this.y -= this.speed;
+        // make sure paddle doesn't go off screen
+        if (this.y < 0) { 
+          this.y = 0;
+        }
       } else if (targetY > paddleCenter + deadZone){
         this.y += this.speed;
+        // make sure paddle doesn't go off screen
+        if (this.y + this.height > this.canvasHeight) {
+          this.y = this.canvasHeight - this.height;
+        }
       }
     }
   }
