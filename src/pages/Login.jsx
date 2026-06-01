@@ -56,6 +56,7 @@ function LoginForm() {
   };
 
   return (
+    <div className="form-page">
     <form className="Form" onSubmit={handleSubmit}>
       <h2>Log in</h2>
       {error && <p className="Form-error">{error}</p>}
@@ -76,6 +77,7 @@ function LoginForm() {
         No account? <Link to="/signup">Sign up</Link>
       </p>
     </form>
+    </div>
   );
 }
 

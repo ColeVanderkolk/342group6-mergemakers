@@ -5,12 +5,13 @@ import Pong from '../Pong/Pong.jsx';
 import HomePage from '../../pages/HomePage.jsx';
 import Signup from '../../pages/Signup.jsx';
 import Login from '../../pages/Login.jsx';
+import Profile from '../../pages/Profile.jsx';
 import PageNotFound from '../../pages/PageNotFound.jsx';
 import "./App.css";
 
 
 function App() {
- return( 
+ return(
   <div>
   <>
   <Routes>
@@ -20,6 +21,7 @@ function App() {
       <Route path="/pong" element={<Pong/>}/>
       <Route path ="/signup" element={<Signup/>}/>
       <Route path="/login" element={<Login/>}/>
+      <Route path="/profile" element={<Profile/>}/>
       <Route path ="*" element={<PageNotFound/>}/>
   </Routes>
   </>
