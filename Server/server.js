@@ -28,7 +28,6 @@ const stat = new mongoose.Schema({
     },
     value: {type: Number}
 })
-
 const gameStats = new mongoose.Schema({
     gameName: {
         type: String,
@@ -39,7 +38,6 @@ const gameStats = new mongoose.Schema({
     },
     stats: [stat]
 })
-
 const playerSchema = new mongoose.Schema({
       username: {
         type: String,
@@ -64,7 +62,7 @@ const playerSchema = new mongoose.Schema({
 });
 
 
-const players = mongoose.model('Player,userSchema');
+const Player = mongoose.model('Player,userSchema');
 
 function validateRegistration({username, email, password}) {
     if(!username || username.trim().length < 5) {
@@ -79,21 +77,59 @@ function validateRegistration({username, email, password}) {
     return '';
 }
 //registers a user
-app.post("/api/register",(rew,res) => {
+app.post("/api/register", async (req,res) => {
     const err = validateRegistration({username, email, password});
     if(error) {
         return res.status(400).json({error: err})
     }
     try {
-        if(await players.findOne({username})) {
+        if(await Player.findOne({username})) {
             return res.status(409).json({error: 'Username already exists'})
         }
+
         const passHash = await bcrypt.hash(password,10);
-        await players.create({username,email,password: hash})
+        await Player.create({username,email,password: passHash});
+        const token = await jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+
+        return res.status(209).json({
+            message: "Registration succesful.",
+            player: {username, email},
+            token: token,
+        });
+
+    } catch(error) {
+        console.error("Login error:", error);
+        return res.status(500).json({error: 'Server error.'});
     }
-})
+});
 
 //logs a user in
+app.post("/api/login",async (req,res) => {
+    const {username, password} = req.body;
+    if(!username || !password) {
+        return res.status(400).json({error: "Username and password are incorrect."});
+    }
+
+    try {
+        const player = await Player.findOne({username});
+        if(!player || !(await bcrypt.compare(password, player.password))) {
+            return res.status(409).json({
+                error: "Username or password are incorrect",
+            });
+        }
+        const token = await jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+        return res.status(200).json({
+            message: "Login successful.",
+            user: {username: player.username, email: player.email},
+            token: token,
+        });
+
+    } catch (error) {
+        console.error("Login error:", error);
+        return res.status(500).json({error:"Server error."});
+    }
+});
+// logs user out
 
 //updates user scores
 
