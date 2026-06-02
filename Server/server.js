@@ -3,13 +3,13 @@ const express = require("express");
 const cors = require("cors")
 const mongoose = require("mongoose");
 const {Schema} = mongoose;
-const bcrypt = require("bycryptjs");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app,use(cors());
+app.use(cors());
 app.use(express.json());
 
 try{
@@ -27,7 +27,8 @@ const stat = new mongoose.Schema({
         required: true
     },
     value: {type: Number}
-})
+});
+
 const gameStats = new mongoose.Schema({
     gameName: {
         type: String,
@@ -37,7 +38,8 @@ const gameStats = new mongoose.Schema({
         required: true
     },
     stats: [stat]
-})
+});
+
 const playerSchema = new mongoose.Schema({
       username: {
         type: String,
@@ -62,7 +64,7 @@ const playerSchema = new mongoose.Schema({
 });
 
 
-const Player = mongoose.model('Player,userSchema');
+const Player = mongoose.model('Player',playerSchema);
 
 function validateRegistration({username, email, password}) {
     if(!username || username.trim().length < 5) {
@@ -75,11 +77,13 @@ function validateRegistration({username, email, password}) {
         return 'password length must be 8 at minimum'
     }
     return '';
-}
+};
+
 //registers a user
 app.post("/api/register", async (req,res) => {
+    const {username,email,password} = req.body;
     const err = validateRegistration({username, email, password});
-    if(error) {
+    if(err) {
         return res.status(400).json({error: err})
     }
     try {
@@ -109,7 +113,6 @@ app.post("/api/login",async (req,res) => {
     if(!username || !password) {
         return res.status(400).json({error: "Username and password are incorrect."});
     }
-
     try {
         const player = await Player.findOne({username});
         if(!player || !(await bcrypt.compare(password, player.password))) {
@@ -129,8 +132,9 @@ app.post("/api/login",async (req,res) => {
         return res.status(500).json({error:"Server error."});
     }
 });
+
 // logs user out
-app.post("/api/logout",(req,res) => {
+app.post("/api/logout", async (req,res) => {
     if(!req.headers.authorization) {
         return res.status(401).json({error: "Missing or invalid token."})
     }
@@ -147,26 +151,31 @@ app.post("/api/logout",(req,res) => {
 // and an array containing the stat names, and stat values to be updated
 /*
 app.post("/api/leaderboard/update", (req,res) => {
-
+    //verify the user posting the data has an authorization token
     const token = req.headers['authorization'];
     if(!token) {
         return res.status(401).json({message: 'missing or invalid token'});
     }
+    // verify user, then update game stats, if the game has no stats, 
+    // or the stat doesn't exist for the user, insert the new data
 
     try{
         const body = jwt.verify(authArr[1],process.env.JWT_SECRET);
         const username = body.username;
         const gameName = body.gameName;
         const stats = body.stats;
+
         if(!username || !gameName|| !stats) {
             return res.status(409).json({error: "missing username gameName, or game stats"});
         }
+
         const player = await Player.findOne({username});
         if(!player) {
             return res.status(409).json({
                 error: "Invalid body data.",
             });
         }
+
         gameStats = await player.gameResults.findOne("gameName");
 
     } catch(err) {
@@ -174,7 +183,19 @@ app.post("/api/leaderboard/update", (req,res) => {
     }
 });
 */
-//retreives leader board information for user or everyone
+// retreives leader board information, body should contain a game name, and the username of the user 
+// sever will return the scores for all players for that game and the user scores
+app.get("/api/leaderboard",async (req,res) => { 
+    const {username,game} = req.body;
+    if(!username || !game) {
+        return res.status(409).json({error: 'no username or game'});
+    }
+    //for the user
+
+    playerScores = Player.find({gameStats:{$ne: [] }})
+
+});
+
 
 app.use((req,res) => {
     return res.status(404).json({
