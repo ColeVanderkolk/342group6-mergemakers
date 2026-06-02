@@ -130,9 +130,50 @@ app.post("/api/login",async (req,res) => {
     }
 });
 // logs user out
+app.post("/api/logout",(req,res) => {
+    if(!req.headers.authorization) {
+        return res.status(401).json({error: "Missing or invalid token."})
+    }
+    const auth = req.headers.authorization;
+    const authArr = auth.split(" ");
 
-//updates user scores
+    if(authArr[0] != "Bearer") {
+        return res.status(401).json({error: "Missing or invalid token."})
+    }
+    return res.status(200).json({message: "Logged out."});
+});
 
+// updates user scores, the body should include player username, a valid token, the game name
+// and an array containing the stat names, and stat values to be updated
+/*
+app.post("/api/leaderboard/update", (req,res) => {
+
+    const token = req.headers['authorization'];
+    if(!token) {
+        return res.status(401).json({message: 'missing or invalid token'});
+    }
+
+    try{
+        const body = jwt.verify(authArr[1],process.env.JWT_SECRET);
+        const username = body.username;
+        const gameName = body.gameName;
+        const stats = body.stats;
+        if(!username || !gameName|| !stats) {
+            return res.status(409).json({error: "missing username gameName, or game stats"});
+        }
+        const player = await Player.findOne({username});
+        if(!player) {
+            return res.status(409).json({
+                error: "Invalid body data.",
+            });
+        }
+        gameStats = await player.gameResults.findOne("gameName");
+
+    } catch(err) {
+        return res.status(401).json({message: "Invalid or expired token"});
+    }
+});
+*/
 //retreives leader board information for user or everyone
 
 app.use((req,res) => {
