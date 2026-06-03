@@ -70,7 +70,7 @@ function validateRegistration({username, email, password}) {
     if(!username || username.trim().length < 5) {
         return "username length must be 5 at minimum"
     }
-    if(email !== undefined || email.match(/.+@.+\..+/) == null) {
+    if(email === undefined || email.match(/.+@.+\..+/) == null) {
         return 'email must be in format text@text.text';
     }
     if(password === undefined || password.length < 8) {
@@ -93,11 +93,12 @@ app.post("/api/register", async (req,res) => {
 
         const passHash = await bcrypt.hash(password,10);
         await Player.create({username,email,password: passHash});
-        const token = await jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+        const player = await Player.findOne({username});
+        const token = await jwt.sign({id: player._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
 
         return res.status(209).json({
             message: "Registration succesful.",
-            player: {username, email},
+            player: {username: player.username, email: player.email},
             token: token,
         });
 
@@ -120,7 +121,7 @@ app.post("/api/login",async (req,res) => {
                 error: "Username or password are incorrect",
             });
         }
-        const token = await jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+        const token = await jwt.sign({id: player._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
         return res.status(200).json({
             message: "Login successful.",
             user: {username: player.username, email: player.email},
@@ -148,41 +149,55 @@ app.post("/api/logout", async (req,res) => {
 });
 
 // updates user scores, the body should include player username, a valid token, the game name
-// and an array containing the stat names, and stat values to be updated
-/*
-app.post("/api/leaderboard/update", (req,res) => {
-    //verify the user posting the data has an authorization token
-    const token = req.headers['authorization'];
-    if(!token) {
-        return res.status(401).json({message: 'missing or invalid token'});
-    }
+// body should be in JSON and use following format database requires these names, a
+// {"username": "<username here>", "gameName": "<game name here>","stats": [{"statName": "<insert stat name here", "value": <insert value here>}]}
+
+app.post("/api/leaderboard/update", async (req,res) => {
+   
     // verify user, then update game stats, if the game has no stats, 
     // or the stat doesn't exist for the user, insert the new data
 
     try{
-        const body = jwt.verify(authArr[1],process.env.JWT_SECRET);
-        const username = body.username;
-        const gameName = body.gameName;
-        const stats = body.stats;
-
+        const {username,gameName,stats} = req.body
         if(!username || !gameName|| !stats) {
             return res.status(409).json({error: "missing username gameName, or game stats"});
         }
-
         const player = await Player.findOne({username});
         if(!player) {
             return res.status(409).json({
-                error: "Invalid body data.",
+                error: "Invalid username.",
             });
         }
 
-        gameStats = await player.gameResults.findOne("gameName");
+        const isGame = (element) => element.gameName == gameName;
 
+        //check if player has previously saved stats for game will receive index, or -1 if no stats
+        const index = player.gameResults.findIndex(isGame);
+        if(index > -1) {
+            const playerStats = player.gameResults[index] // get array of game stats
+            stats.forEach((element) => {
+                const gameStats = (next) => next.statName == element.statName;
+                let i = playerStats.stats.findIndex(gameStats);
+
+                if(i < 0) {
+                    playerStats.push(element);
+                } else if(element.value > playerStats.stats[i].value){
+                    playerStats.stats[i].value = element.value;
+                }
+        });
+            player.gameResults[index] = playerStats;
+        } else {//player has never played this game before, and we should save all stats
+            const newStats = {gameName: gameName, stats: stats}
+            player.gameResults.push(newStat);
+        }
+        await player.save();
+        return res.status(200).json({message: "player scores updated"})
     } catch(err) {
-        return res.status(401).json({message: "Invalid or expired token"});
+        console.log(err);
+        return res.status(401).json({message: "error updating scores"});
     }
 });
-*/
+
 // retreives leader board information, body should contain a game name, and the username of the user 
 // sever will return the scores for all players for that game and the user scores
 app.get("/api/leaderboard",async (req,res) => { 
@@ -191,9 +206,9 @@ app.get("/api/leaderboard",async (req,res) => {
         return res.status(409).json({error: 'no username or game'});
     }
     //for the user
-
-    playerScores = Player.find({gameStats:{$ne: [] }})
-
+    console.log(username,game);
+    let playerScores = await Player.findOne({},'username gameStats');
+    return res.status(200).json({message:"allgood", username: playerScores.username, stats: playerScores.gameStats});
 });
 
 
