@@ -206,11 +206,22 @@ app.get("/api/leaderboard",async (req,res) => {
     if(!username || !game) {
         return res.status(409).json({error: 'no username or game'});
     }
+
     //for the user
     console.log(username,game);
-    let playerScores = await Player.find({},'username gameResults');
-
-    return res.status(200).json({message:"allgood", username: playerScores.username, stats: playerScores.gameResults});
+    let players = await Player.find({'gameResults.gameName': game},'username gameResults');
+    let user = {}
+    const scores = [];
+    for(i in players) {
+        const player = players[i]
+        const stats = players[i].gameResults.find((element) => element.gameName == game)
+        if(players[i].username == username) {
+            user = {username: username,stats: stats}
+        } else {
+            scores.push({username: player.username, stats: stats});
+        }
+    }
+    return res.status(200).json({leaderBoard: scores, player: user});
 });
 
 
