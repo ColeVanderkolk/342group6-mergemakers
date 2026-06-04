@@ -58,9 +58,10 @@ const playerSchema = new mongoose.Schema({
         required: true,
         minLength: 32,
       },
-      gameResults: [gameStats]
+      gameResults: [gameStats],
+      friends: [String]
 });
-
+playerSchema.add({friends: [String]})
 
 const Player = mongoose.model('Player',playerSchema);
 
@@ -224,6 +225,39 @@ app.get("/api/leaderboard",async (req,res) => {
     return res.status(200).json({leaderBoard: scores, player: user});
 });
 
+app.post("/api/friends/add", async (req, res) => {
+    const {username,friendName} = req.body
+    const findFriend = (element) => element == friendName;
+    try {
+        player = await Player.findOne({username});
+        if(Player.findOne({friendName}) && player.friends.findIndex(findFriend) < 0) {
+            player.friends.push(friendName);
+            await player.save();
+        } else {
+            return res.status(209).json({error: "player already in friends list, or doesn't exist"});
+        }
+
+    } catch(err) {
+        console.error(err);
+        return res.status(409).json({error : "problem adding friend"});
+    }
+    return res.status(200).json({message: "player added successfully"})
+}); 
+
+app.post("/api/friends/remove", async (req,res) => {
+    const {username,friendName} = req.body
+    const findFriend = (element) => element == friendName;
+    if(!username || !friendName) {
+        return res.status(400).json({error: "missing username or friendName"});
+    }
+    const player = await Player.findOne({username});
+    let index = player.friends.findIndex(findFriend);
+    if(index >= 0) {
+        player.friends.splice(index,1);
+        await player.save();
+    }
+    return res.status(200).json({message : "friend removed successfully"})
+});
 
 app.use((req,res) => {
     return res.status(404).json({
