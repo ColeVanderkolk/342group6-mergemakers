@@ -23,7 +23,6 @@ const stat = new mongoose.Schema({
         type: String,
         minLength: 3,
         trim: true,
-        unique: true,
         required: true
     },
     value: {type: Number}
@@ -34,7 +33,6 @@ const gameStats = new mongoose.Schema({
         type: String,
         minLength: 1,
         trim: true,
-        unique: true,
         required: true
     },
     stats: [stat]
@@ -86,11 +84,12 @@ app.post("/api/register", async (req,res) => {
     if(err) {
         return res.status(400).json({error: err})
     }
-    try {
-        if(await Player.findOne({username})) {
-            return res.status(409).json({error: 'Username already exists'})
-        }
+    
+    if(await Player.findOne({username}) || await Player.findOne({email})) {
+        return res.status(409).json({error: 'Username  or email already exists'})
+    }
 
+        try {
         const passHash = await bcrypt.hash(password,10);
         await Player.create({username,email,password: passHash});
         const player = await Player.findOne({username});
@@ -180,15 +179,17 @@ app.post("/api/leaderboard/update", async (req,res) => {
                 let i = playerStats.stats.findIndex(gameStats);
 
                 if(i < 0) {
-                    playerStats.push(element);
+                    console.log(player.gameResults[index]);
+                    player.gameResults[index].stats.push(element);
                 } else if(element.value > playerStats.stats[i].value){
                     playerStats.stats[i].value = element.value;
                 }
         });
             player.gameResults[index] = playerStats;
         } else {//player has never played this game before, and we should save all stats
+
             const newStats = {gameName: gameName, stats: stats}
-            player.gameResults.push(newStat);
+            player.gameResults.push(newStats);
         }
         await player.save();
         return res.status(200).json({message: "player scores updated"})
@@ -207,8 +208,9 @@ app.get("/api/leaderboard",async (req,res) => {
     }
     //for the user
     console.log(username,game);
-    let playerScores = await Player.findOne({},'username gameStats');
-    return res.status(200).json({message:"allgood", username: playerScores.username, stats: playerScores.gameStats});
+    let playerScores = await Player.find({},'username gameResults');
+
+    return res.status(200).json({message:"allgood", username: playerScores.username, stats: playerScores.gameResults});
 });
 
 
