@@ -61,7 +61,6 @@ const playerSchema = new mongoose.Schema({
       gameResults: [gameStats],
       friends: [String]
 });
-playerSchema.add({friends: [String]})
 
 const Player = mongoose.model('Player',playerSchema);
 
@@ -124,7 +123,7 @@ app.post("/api/login",async (req,res) => {
         const token = await jwt.sign({id: player._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
         return res.status(200).json({
             message: "Login successful.",
-            user: {username: player.username, email: player.email},
+            user: {username: player.username, email: player.email, friends: player.friends, gameResults: player.gameResults},
             token: token,
         });
 
