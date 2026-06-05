@@ -1,4 +1,4 @@
-import OutOfOrder from '../Components/GamePlay/sprites/OutOfOrder.png';
+import OutOfOrder from '../components/GamePlay/sprites/OutOfOrder.png';
 
 function PageNotFound() {
     return (
