@@ -252,6 +252,7 @@ app.post("/api/leaderboard/update", async (req,res) => {
     }
 });
 
+//TODO FIX LEADERBOARD TO WORK WITH NEW SCHEMAS
 // retreives leader board information, body should contain a game name, and the username of the user 
 // sever will return the scores for all players for that game and the user scores
 app.get("/api/leaderboard",async (req,res) => { 
@@ -309,6 +310,58 @@ app.post("/api/friends/remove", async (req,res) => {
         await player.save();
     }
     return res.status(200).json({message : "friend removed successfully"})
+});
+
+/*
+const gameSchema = new mongoose.Schema({
+    gameName: {
+        type: String,
+        minLength: 1,
+        trim: true,
+        required: true,
+        unique: true
+    },
+    comments: {
+        type: [comment]
+    },
+    gameStats: {
+        type: [gameStats]
+    },
+    totalClicks: {
+        type: Number,
+        required: true
+    }
+*/
+
+//retreives game information for requested game
+app.post("/api/game/", async (req,res) => {
+    const {gameName} = req.body;
+    if(!gameName) {
+        return res.status(400).json({error: "no game name provided"});
+    }
+
+    const game = Games.findOne({gameName});
+    if(!game) {
+        return res.status(404).json({error: "game not found."});
+    }
+    return res.status(200).json({gameName: game.gameName,comments: game.comments, gameStats})
+
+
+});
+
+//retreives comments for requested game
+app.post("/api/game/comments", async (req,res) => {
+
+});
+
+//adds comment to comment array for chosen game
+app.post("/api/game/comments/add", async (req,res) => {
+
+});
+
+//
+app.post("/api/game/rate", async (req,res) => {
+
 });
 
 // run this in postman to populate your arrays 
