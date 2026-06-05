@@ -284,9 +284,10 @@ app.get("/api/leaderboard",async (req,res) => {
     if(!leaderBoard) {
         return res.status(400).json({error: "game not found."});
     }
-    return res.status(200).json({leaderBoard});
+    return res.status(200).json({message: "got leaderboard", leaderBoard: leaderBoard});
 });
 
+//adds a friend to a user, returns friend list
 app.post("/api/friends/add", async (req, res) => {
     const {username,friendName} = req.body
     const findFriend = (element) => element == friendName;
@@ -303,9 +304,10 @@ app.post("/api/friends/add", async (req, res) => {
         console.error(err);
         return res.status(409).json({error : "problem adding friend"});
     }
-    return res.status(200).json({message: "player added successfully"})
+    return res.status(200).json({message: "player added successfully", friends: player.friends})
 }); 
 
+//removes a friend from a user, returns new friend list
 app.post("/api/friends/remove", async (req,res) => {
     const {username,friendName} = req.body
     const findFriend = (element) => element == friendName;
@@ -318,7 +320,7 @@ app.post("/api/friends/remove", async (req,res) => {
         player.friends.splice(index,1);
         await player.save();
     }
-    return res.status(200).json({message : "friend removed successfully"})
+    return res.status(200).json({message : "friend removed successfully.", friends: player.friends})
 });
 
 //retreives game information for requested game
@@ -334,7 +336,7 @@ app.get("/api/game", async (req,res) => {
         return res.status(404).json({error: "game not found."});
     }
 
-    return res.status(200).json({gameName: game.gameName,comments: game.comments, gameStats: game.gameStats, totalClicks: game.totalClicks});
+    return res.status(200).json({message: "retreived game info", gameName: game.gameName,comments: game.comments, gameStats: game.gameStats, totalClicks: game.totalClicks});
 });
 
 //retreives comments for requested game
@@ -347,7 +349,7 @@ app.get("/api/game/comments", async (req,res) => {
     if(!game) {
         return res.status(404).json({error: "game not found."});
     }
-    return res.status(200).json({comments: game.comments})
+    return res.status(200).json({message: "retreived comments",comments: game.comments})
 });
 
 //adds comment to comment array for chosen game
@@ -373,7 +375,7 @@ app.post("/api/game/comments/add", async (req,res) => {
     console.log(game.comments)
     game.comments.push(comment);
     await game.save();
-    return res.status(200).json({comments: game.comments})
+    return res.status(200).json({message: "added comment", comments: game.comments})
 });
 
 // changes rating, and calculates game rating, then returns new rating, and the new average rating
@@ -384,7 +386,6 @@ app.post("/api/game/rate", async (req,res) => {
      if(!gameName || !username, !rating) {
         return res.status(404).json({error: "no game name, username, or rating provided."});
     }
-
     const game = await Games.findOne({gameName});
     if(!game) {
         return res.status(404).json({error: "game not found."});
@@ -408,7 +409,7 @@ app.post("/api/game/rate", async (req,res) => {
             }
             game.gameStats[index] = playerStats;
             await game.save()
-            return res.status(200).json({averageRating: game.averageRating,rating: rating})
+            return res.status(200).json({message: "rating changed", averageRating: game.averageRating,rating: rating})
         } 
             return res.status(403).json({error: "you must play the game before you can rate it."})
     
