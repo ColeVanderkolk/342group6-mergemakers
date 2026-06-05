@@ -39,7 +39,7 @@ const gameStats = new mongoose.Schema({
         required: true
     },
     rating: {
-        type: Number
+        type: Number,
     }
 });
 
@@ -98,6 +98,14 @@ const gameSchema = new mongoose.Schema({
     totalClicks: {
         type: Number,
         required: true
+    },
+    averageRating: {
+        type: Number,
+        default: 0
+    },
+    numRatings: {
+        type: Number,
+        default: 0
     }
 });
 
@@ -362,34 +370,20 @@ app.get("/api/game/comments", async (req,res) => {
     return res.status(200).json({comments: game.comments})
 });
 
-/*
-const comment = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true
-    },
-    message: {
-        type: String,
-        minLength: 1
-    },
-    postTime: {
-        type: Date,
-    }
-});
-*/
 //adds comment to comment array for chosen game
 app.post("/api/game/comments/add", async (req,res) => {
     const {username,gameName, message} = req.body;
 
     if(!gameName || !username, !message) {
-        return res.status(404).json({error: "no game name or username provided."});
+        return res.status(404).json({error: "no game name, username, or message provided."});
     }
+
     const game = await Games.findOne({gameName});
     console.log("this is a test",game.gameName);
     if(!game) {
         return res.status(404).json({error: "game not found."});
     }
-    
+
     const player = await Player.findOne({username});
     if(!player) {
         return res.status(404).json({error: "user not found."});
@@ -402,9 +396,42 @@ app.post("/api/game/comments/add", async (req,res) => {
     return res.status(200).json({comments: game.comments})
 });
 
-//
+// changes rating, and calculates game rating, then returns new rating, and the new average rating
+// players should not be able to rate the game until they have played it
 app.post("/api/game/rate", async (req,res) => {
+    const {username,gameName, rating} = req.body;
 
+     if(!gameName || !username, !rating) {
+        return res.status(404).json({error: "no game name, username, or rating provided."});
+    }
+
+    const game = await Games.findOne({gameName});
+    if(!game) {
+        return res.status(404).json({error: "game not found."});
+    }
+    const player = await Player.findOne({username});
+    if(!player) {
+        return res.status(404).json({error: "user not found."});
+    }
+    const hasPlayer = (element) => element.username == username;
+    const index = game.gameStats.findIndex(hasPlayer);
+        if(index > -1) {
+            const playerStats = game.gameStats[index] // get array of game stats
+            if(playerStats.rating > 0) {
+                let averageRating = game.averageRating;
+                game.averageRating = ((averageRating*game.numRatings - playerStats.rating) + rating)/game.numRatings;
+                playerStats.rating = rating;
+            } else {
+                game.averageRating = (game.averageRating*game.numRatings + rating)/(game.numRatings+1);
+                game.numRatings += 1;
+                playerStats.rating = rating;
+            }
+            game.gameStats[index] = playerStats;
+            await game.save()
+            return res.status(200).json({averageRating: game.averageRating,rating: rating})
+        } 
+            return res.status(403).json({error: "you must play the game before you can rate it."})
+    
 });
 
 // run this in postman to populate your arrays 
