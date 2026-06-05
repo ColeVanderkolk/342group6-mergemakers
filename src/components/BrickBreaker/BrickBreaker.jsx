@@ -214,7 +214,7 @@ function BrickBreaker() {
           </div>
         </div>
       )}
-      <CommentsSection gameName="BrickBreaker" />
+      <CommentsSection gameName="Brickbreaker" />
     </div>
   );
 }

@@ -35,7 +35,11 @@ function CommentsSection({ gameName }) {
 
   const fetchComments = async () => {
     try {
-      const res = await fetch(`/api/games/${encodeURIComponent(gameName)}/comments`);
+      const res = await fetch("/api/game/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ gameName }),
+      });
       const data = await res.json();
       setComments(data.comments || []);
     } catch (err) {
@@ -50,10 +54,10 @@ function CommentsSection({ gameName }) {
     if (!user || !message.trim() || rating === 0) return;
     setSubmitting(true);
     try {
-      const res = await fetch(`/api/games/${encodeURIComponent(gameName)}/comments`, {
+      const res = await fetch("/api/game/comments/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: user.username, message: message.trim(), rating }),
+        body: JSON.stringify({ gameName, username: user.username, message: message.trim(), rating }),
       });
       if (res.ok) {
         setMessage("");
@@ -115,7 +119,7 @@ function CommentsSection({ gameName }) {
               <div className="comment-header">
                 <span className="comment-username">{comment.username}</span>
                 <StarRating value={comment.rating} readOnly />
-                <span className="comment-date">{formatDate(comment.createdAt)}</span>
+                <span className="comment-date">{formatDate(comment.postTime)}</span>
               </div>
               <p className="comment-message">{comment.message}</p>
             </div>
