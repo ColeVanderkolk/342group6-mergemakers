@@ -54,6 +54,7 @@ const comment = new mongoose.Schema({
     },
     postTime: {
         type: Date,
+        default: Date.now
     }
 });
 
@@ -361,9 +362,44 @@ app.get("/api/game/comments", async (req,res) => {
     return res.status(200).json({comments: game.comments})
 });
 
+/*
+const comment = new mongoose.Schema({
+    username: {
+        type: String,
+        required: true
+    },
+    message: {
+        type: String,
+        minLength: 1
+    },
+    postTime: {
+        type: Date,
+    }
+});
+*/
 //adds comment to comment array for chosen game
 app.post("/api/game/comments/add", async (req,res) => {
+    const {username,gameName, message} = req.body;
 
+    if(!gameName || !username, !message) {
+        return res.status(404).json({error: "no game name or username provided."});
+    }
+    const game = await Games.findOne({gameName});
+    console.log("this is a test",game.gameName);
+    if(!game) {
+        return res.status(404).json({error: "game not found."});
+    }
+    
+    const player = await Player.findOne({username});
+    if(!player) {
+        return res.status(404).json({error: "user not found."});
+    }
+
+    const comment = {username: player.username, message: message};
+    console.log(game.comments)
+    game.comments.push(comment);
+    await game.save();
+    return res.status(200).json({comments: game.comments})
 });
 
 //
