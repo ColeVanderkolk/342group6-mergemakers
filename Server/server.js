@@ -260,30 +260,31 @@ app.post("/api/leaderboard/update", async (req,res) => {
     }
 });
 
-//TODO FIX LEADERBOARD TO WORK WITH NEW SCHEMAS
-// retreives leader board information, body should contain a game name, and the username of the user 
-// sever will return the scores for all players for that game and the user scores
-app.get("/api/leaderboard",async (req,res) => { 
-    const {username,game} = req.body;
-    if(!username || !game) {
-        return res.status(409).json({error: 'no username or game'});
-    }
 
-    //for the user
-    console.log(username,game);
-    let players = await Player.find({'gameResults.gameName': game},'username gameResults');
-    let user = {}
-    const scores = [];
-    for(i in players) {
-        const player = players[i]
-        const stats = players[i].gameResults.find((element) => element.gameName == game)
-        if(players[i].username == username) {
-            user = {username: username,stats: stats}
-        } else {
-            scores.push({username: player.username, stats: stats});
-        }
+// retreives leader board information, body should contain a game name,
+// sever will return the scores for all players for that game if an array of users is given it will find the stats array for each provided user
+app.get("/api/leaderboard",async (req,res) => { 
+    const {gameName, players} = req.body;
+    if(!gameName || !players) {
+        return res.status(409).json({error: 'no game provided, must provide empty array at minimum.'});
     }
-    return res.status(200).json({leaderBoard: scores, player: user});
+    const leaderBoard = await Games.findOne({'gameName':gameName}, 'gameStats');
+    //for the user
+    const playerScores = []
+    if(players.length > 0) {
+        for(i in players) {
+            const user = players[i]
+            const stats = leaderBoard.gameStats.find((element) => element.username == user)
+            if(stats) {
+                playerScores.push({username: user, stats: stats});
+            }
+        }
+        return res.status(200).json({leaderBoard: playerScores});
+    }
+    if(!leaderBoard) {
+        return res.status(400).json({error: "game not found."});
+    }
+    return res.status(200).json({leaderBoard});
 });
 
 app.post("/api/friends/add", async (req, res) => {
@@ -319,27 +320,6 @@ app.post("/api/friends/remove", async (req,res) => {
     }
     return res.status(200).json({message : "friend removed successfully"})
 });
-
-/*
-const gameSchema = new mongoose.Schema({
-    gameName: {
-        type: String,
-        minLength: 1,
-        trim: true,
-        required: true,
-        unique: true
-    },
-    comments: {
-        type: [comment]
-    },
-    gameStats: {
-        type: [gameStats]
-    },
-    totalClicks: {
-        type: Number,
-        required: true
-    }
-*/
 
 //retreives game information for requested game
 app.get("/api/game", async (req,res) => {
