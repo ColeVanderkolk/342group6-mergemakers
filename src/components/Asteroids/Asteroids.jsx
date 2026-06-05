@@ -2,6 +2,7 @@ import GamePlay from "..//GamePlay/GamePlay.jsx";
 import PlayerInfo from "..//PlayerInfo/PlayerInfo.jsx";
 import Leaderboard from "..//Leaderboard/Leaderboard.jsx";
 import Start from "../Start.jsx";
+import CommentsSection from "../CommentsSection/CommentsSection.jsx";
 import { useState } from "react";
 function Asteroids() {
   const [screen, setScreen] = useState("start");
@@ -33,6 +34,7 @@ function Asteroids() {
           <PlayerInfo setScreen={setScreen}/>
         )}
       </div>
+      <CommentsSection gameName="Asteroids" />
     </div>
   )
 }

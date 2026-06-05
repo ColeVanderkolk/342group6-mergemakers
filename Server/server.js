@@ -64,6 +64,22 @@ const playerSchema = new mongoose.Schema({
 
 const Player = mongoose.model('Player',playerSchema);
 
+const commentSchema = new mongoose.Schema({
+    gameName: { type: String, required: true, trim: true },
+    username: { type: String, required: true, trim: true },
+    message: { type: String, required: true, trim: true, maxLength: 500 },
+    rating: { type: Number, required: true, min: 1, max: 5 },
+    createdAt: { type: Date, default: Date.now }
+});
+
+const gameSchema = new mongoose.Schema({
+    gameName: { type: String, required: true, unique: true, trim: true },
+    totalPlays: { type: Number, default: 0 }
+});
+
+const Comment = mongoose.model('Comment', commentSchema);
+const Game = mongoose.model('Game', gameSchema);
+
 function validateRegistration({username, email, password}) {
     if(!username || username.trim().length < 5) {
         return "username length must be 5 at minimum"
@@ -256,6 +272,51 @@ app.post("/api/friends/remove", async (req,res) => {
         await player.save();
     }
     return res.status(200).json({message : "friend removed successfully"})
+});
+
+app.get("/api/games/:gameName/comments", async (req, res) => {
+    const { gameName } = req.params;
+    try {
+        const comments = await Comment.find({ gameName }).sort({ createdAt: -1 }).limit(50);
+        const game = await Game.findOne({ gameName });
+        return res.status(200).json({ comments, totalPlays: game ? game.totalPlays : 0 });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Failed to fetch comments" });
+    }
+});
+
+app.post("/api/games/:gameName/comments", async (req, res) => {
+    const { gameName } = req.params;
+    const { username, message, rating } = req.body;
+    if (!username || !message || !message.trim()) {
+        return res.status(400).json({ error: "Username and message are required" });
+    }
+    if (!rating || rating < 1 || rating > 5) {
+        return res.status(400).json({ error: "Rating must be between 1 and 5" });
+    }
+    try {
+        await Comment.create({ gameName, username, message: message.trim(), rating });
+        return res.status(201).json({ message: "Comment posted" });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Failed to post comment" });
+    }
+});
+
+app.post("/api/games/:gameName/play", async (req, res) => {
+    const { gameName } = req.params;
+    try {
+        await Game.findOneAndUpdate(
+            { gameName },
+            { $inc: { totalPlays: 1 } },
+            { upsert: true, new: true }
+        );
+        return res.status(200).json({ message: "Play recorded" });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Failed to record play" });
+    }
 });
 
 app.use((req,res) => {
