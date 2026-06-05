@@ -4,7 +4,7 @@ import './Navigation.css';
 function Navigation() {
   return (
     <nav className="nav">
-      <Link to="/" className="nav-brand">Virtual Arcade | </Link>
+      <Link to="/" className="nav-brand">Starcade </Link>
       <div className="nav-actions">
         <Link to="/GlobalLeaderboard" className="nav-button">Leaderboard</Link>
         <Link to="/profile" className="nav-button">Profile</Link>
