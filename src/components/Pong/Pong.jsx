@@ -1,7 +1,8 @@
 import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserPaddle, OppPaddle, Ball } from "./PongEngine.js";
-import Leaderboard from "../Leaderboard/Leaderboard.jsx"; 
+import Leaderboard from "../Leaderboard/Leaderboard.jsx";
+import CommentsSection from "../CommentsSection/CommentsSection.jsx";
 
 
 function Pong() {
@@ -108,37 +109,36 @@ function Pong() {
     setGameState("playing");
   };
 
-  // Game Over/Victory screen
-  if (gameState === "gameover" || gameState === "victory") {
-    const isWin = gameState === "victory";
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#111', color: 'white' }}>
-        <h1 style={{ fontSize: '4rem', marginBottom: '25px', color: isWin ? '#FFD700' : '#FF5733' }}>
-          {isWin ? "VICTORY!" : "Game Over"}
-        </h1>
-        <p style={{ fontSize: '1.5rem', marginBottom: '30px'}}>Your Final Score: {userScoreRef.current}</p>
-        <p style={{ fontSize: '1.5rem', marginBottom: '30px' }}>Opponent's Final Score: {oppScoreRef.current}</p>
+  const isWin = gameState === "victory";
 
-        <div style={{ marginBottom: '30px' }}><Leaderboard /></div>
-
-        <div style={{ display: 'flex', gap: '20px' }}>
-          <button onClick={restartGame} style={{ padding: '10px 20px', cursor: 'pointer', background: '#0095DD', color: 'white', border: 'none', borderRadius: '4px', fontSize: '1.2rem' }}>
-            Play Again
-          </button>
-          <button onClick={() => navigate("/")} style={{ padding: '10px 20px', cursor: 'pointer', background: '#555', color: 'white', border: 'none', borderRadius: '4px', fontSize: '1.2rem' }}>
-            Quit to Menu
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // --- RENDER CANVAS ---
+  // --- UNIFIED RENDER ---
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#222' }}>
-      <h2 style={{ color: 'white', fontFamily: 'sans-serif', marginBottom: '10px' }}>Pong</h2>
-      <canvas ref={canvasRef} width={800} height={600} style={{ border: '4px solid #0095DD', borderRadius: '4px', background: 'black' }} />
-      <button onClick={() => navigate("/")} style={{ marginTop: '20px', padding: '10px 20px', cursor: 'pointer', background: '#555', color: 'white', border: 'none', borderRadius: '4px' }}>Quit to Menu</button>
+    <div style={{ background: '#222', paddingBottom: '40px' }}>
+      {gameState === "playing" ? (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+          <h2 style={{ color: 'white', fontFamily: 'sans-serif', marginBottom: '10px' }}>Pong</h2>
+          <canvas ref={canvasRef} width={800} height={600} style={{ border: '4px solid #0095DD', borderRadius: '4px', background: 'black' }} />
+          <button onClick={() => navigate("/")} style={{ marginTop: '20px', padding: '10px 20px', cursor: 'pointer', background: '#555', color: 'white', border: 'none', borderRadius: '4px' }}>Quit to Menu</button>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', color: 'white' }}>
+          <h1 style={{ fontSize: '4rem', marginBottom: '25px', color: isWin ? '#FFD700' : '#FF5733' }}>
+            {isWin ? "VICTORY!" : "Game Over"}
+          </h1>
+          <p style={{ fontSize: '1.5rem', marginBottom: '30px' }}>Your Final Score: {userScoreRef.current}</p>
+          <p style={{ fontSize: '1.5rem', marginBottom: '30px' }}>Opponent's Final Score: {oppScoreRef.current}</p>
+          <div style={{ marginBottom: '30px' }}><Leaderboard /></div>
+          <div style={{ display: 'flex', gap: '20px' }}>
+            <button onClick={restartGame} style={{ padding: '10px 20px', cursor: 'pointer', background: '#0095DD', color: 'white', border: 'none', borderRadius: '4px', fontSize: '1.2rem' }}>
+              Play Again
+            </button>
+            <button onClick={() => navigate("/")} style={{ padding: '10px 20px', cursor: 'pointer', background: '#555', color: 'white', border: 'none', borderRadius: '4px', fontSize: '1.2rem' }}>
+              Quit to Menu
+            </button>
+          </div>
+        </div>
+      )}
+      <CommentsSection gameName="Pong" />
     </div>
   );
 

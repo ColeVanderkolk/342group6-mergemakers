@@ -344,7 +344,7 @@ app.post("/api/game/", async (req,res) => {
     if(!game) {
         return res.status(404).json({error: "game not found."});
     }
-    return res.status(200).json({gameName: game.gameName,comments: game.comments, gameStats})
+    return res.status(200).json({gameName: game.gameName,comments: game.comments, gameStats: game.gameStats, totalClicks: game.totalClicks});
 
 
 });
