@@ -355,10 +355,10 @@ app.get("/api/game/comments", async (req,res) => {
         return res.status(404).json({error: "no game name provided."});
     }
     const game = await Games.find({gameName});
-    for(i in game) {
-        console.log(i);
+    if(!game) {
+        return res.status(404).json({error: "game not found."});
     }
-    return res.status(200).json({})
+    return res.status(200).json({comments: game.comments})
 });
 
 //adds comment to comment array for chosen game
