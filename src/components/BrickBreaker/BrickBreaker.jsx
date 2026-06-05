@@ -188,20 +188,20 @@ function BrickBreaker() {
 
   const isWin = gameState === "victory";
 
-  // --- UNIFIED RENDER ---
+  // --- Render ---
   return (
     <div className="body">
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
         
-        {/* GAME WRAPPER */}
-        <div className="game" style={{ width: '100%', display: 'flex', justifyContent: 'center', background: '#222', padding: '20px 0' }}>
+        {/* Game wrapper */}
+        <div className="game" style={{ width: '100%', display: 'flex', justifyContent: 'center', background: '#222', padding: '100px 0 40px 0' }}>
           
           {gameState === "playing" ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
               <h2 style={{ color: 'white', fontFamily: 'sans-serif', marginBottom: '10px' }}>Brick Breaker</h2>
               <canvas ref={canvasRef} width={800} height={600} style={{ border: '4px solid #0095DD', borderRadius: '4px', background: 'black' }} />
               
-              {/* CONTROLS & INSTRUCTIONS BOX */}
+              {/* Controls and instructions */}
               <div style={{ marginTop: '20px', color: '#ccc', textAlign: 'center', fontFamily: 'monospace', background: '#111', padding: '15px 30px', borderRadius: '4px', border: '1px solid #444' }}>
                 <p style={{ margin: '5px 0', fontSize: '1.1rem' }}><strong>CONTROLS</strong></p>
                 <p style={{ margin: '5px 0' }}>[A] / [D]  or  [◄] / [►] Arrows to move paddle</p>
