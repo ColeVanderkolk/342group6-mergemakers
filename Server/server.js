@@ -201,7 +201,6 @@ app.post("/api/logout", async (req,res) => {
 // {"username": "<username>", "gameName": "<name>","stats": [{"statName": "<name>", "value": <value>}]}
 
 app.post("/api/leaderboard/update", async (req,res) => {
-   
 
     try{
         const {username,gameName,stats} = req.body
@@ -334,24 +333,32 @@ const gameSchema = new mongoose.Schema({
 */
 
 //retreives game information for requested game
-app.post("/api/game/", async (req,res) => {
+app.get("/api/game", async (req,res) => {
     const {gameName} = req.body;
+  
     if(!gameName) {
         return res.status(400).json({error: "no game name provided"});
     }
-
-    const game = Games.findOne({gameName});
+    const game = await Games.findOne({gameName});
+    console.log("game is",game.gameName);
     if(!game) {
         return res.status(404).json({error: "game not found."});
     }
+
     return res.status(200).json({gameName: game.gameName,comments: game.comments, gameStats: game.gameStats, totalClicks: game.totalClicks});
-
-
 });
 
 //retreives comments for requested game
-app.post("/api/game/comments", async (req,res) => {
-
+app.get("/api/game/comments", async (req,res) => {
+    const {gameName} = req.body;
+    if(!gameName) {
+        return res.status(404).json({error: "no game name provided."});
+    }
+    const game = await Games.find({gameName});
+    for(i in game) {
+        console.log(i);
+    }
+    return res.status(200).json({})
 });
 
 //adds comment to comment array for chosen game
