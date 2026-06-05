@@ -190,31 +190,55 @@ function BrickBreaker() {
 
   // --- UNIFIED RENDER ---
   return (
-    <div style={{ background: '#222', paddingBottom: '40px' }}>
-      {gameState === "playing" ? (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-          <h2 style={{ color: 'white', fontFamily: 'sans-serif', marginBottom: '10px' }}>Brick Breaker</h2>
-          <canvas ref={canvasRef} width={800} height={600} style={{ border: '4px solid #0095DD', borderRadius: '4px', background: 'black' }} />
-          <button onClick={() => navigate("/")} style={{ marginTop: '20px', padding: '10px 20px', cursor: 'pointer', background: '#555', color: 'white', border: 'none', borderRadius: '4px' }}>Quit to Menu</button>
+    <div className="body">
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+        
+        {/* GAME WRAPPER */}
+        <div className="game" style={{ width: '100%', display: 'flex', justifyContent: 'center', background: '#222', padding: '20px 0' }}>
+          
+          {gameState === "playing" ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+              <h2 style={{ color: 'white', fontFamily: 'sans-serif', marginBottom: '10px' }}>Brick Breaker</h2>
+              <canvas ref={canvasRef} width={800} height={600} style={{ border: '4px solid #0095DD', borderRadius: '4px', background: 'black' }} />
+              
+              {/* CONTROLS & INSTRUCTIONS BOX */}
+              <div style={{ marginTop: '20px', color: '#ccc', textAlign: 'center', fontFamily: 'monospace', background: '#111', padding: '15px 30px', borderRadius: '4px', border: '1px solid #444' }}>
+                <p style={{ margin: '5px 0', fontSize: '1.1rem' }}><strong>CONTROLS</strong></p>
+                <p style={{ margin: '5px 0' }}>[A] / [D]  or  [◄] / [►] Arrows to move paddle</p>
+                <p style={{ margin: '10px 0 5px 0', color: '#FFD700' }}><strong>POWER-UPS</strong></p>
+                <p style={{ margin: '0' }}>[L] = Extra Life &nbsp;|&nbsp; [M] = Multi-ball</p>
+              </div>
+
+              <button onClick={() => navigate("/")} style={{ marginTop: '20px', padding: '10px 20px', cursor: 'pointer', background: '#555', color: 'white', border: 'none', borderRadius: '4px' }}>
+                Quit to Menu
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', background: '#111', color: 'white', width: '100%' }}>
+              <h1 style={{ fontSize: '4rem', marginBottom: '10px', color: isWin ? '#FFD700' : '#FF5733' }}>
+                {isWin ? "VICTORY!" : "Game Over"}
+              </h1>
+              <p style={{ fontSize: '1.5rem', marginBottom: '30px' }}>Final Score: {scoreRef.current}</p>
+              <div style={{ marginBottom: '30px' }}><Leaderboard /></div>
+              <div style={{ display: 'flex', gap: '20px' }}>
+                <button onClick={restartGame} style={{ padding: '10px 20px', cursor: 'pointer', background: '#0095DD', color: 'white', border: 'none', borderRadius: '4px', fontSize: '1.2rem' }}>
+                  Play Again
+                </button>
+                <button onClick={() => navigate("/")} style={{ padding: '10px 20px', cursor: 'pointer', background: '#555', color: 'white', border: 'none', borderRadius: '4px', fontSize: '1.2rem' }}>
+                  Quit to Menu
+                </button>
+              </div>
+            </div>
+          )}
+
         </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', background: '#111', color: 'white' }}>
-          <h1 style={{ fontSize: '4rem', marginBottom: '10px', color: isWin ? '#FFD700' : '#FF5733' }}>
-            {isWin ? "VICTORY!" : "Game Over"}
-          </h1>
-          <p style={{ fontSize: '1.5rem', marginBottom: '30px' }}>Final Score: {scoreRef.current}</p>
-          <div style={{ marginBottom: '30px' }}><Leaderboard /></div>
-          <div style={{ display: 'flex', gap: '20px' }}>
-            <button onClick={restartGame} style={{ padding: '10px 20px', cursor: 'pointer', background: '#0095DD', color: 'white', border: 'none', borderRadius: '4px', fontSize: '1.2rem' }}>
-              Play Again
-            </button>
-            <button onClick={() => navigate("/")} style={{ padding: '10px 20px', cursor: 'pointer', background: '#555', color: 'white', border: 'none', borderRadius: '4px', fontSize: '1.2rem' }}>
-              Quit to Menu
-            </button>
-          </div>
+
+        {/* Comment section */}
+        <div style={{ width: '800px', maxWidth: '90%', marginTop: '20px' }}>
+          <CommentsSection gameName="Brickbreaker" />
         </div>
-      )}
-      <CommentsSection gameName="Brickbreaker" />
+
+      </div>
     </div>
   );
 }
