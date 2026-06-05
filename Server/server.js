@@ -198,7 +198,7 @@ app.post("/api/logout", async (req,res) => {
 
 // updates user scores, the body should include player username, a valid token, the game name
 // body should be in JSON and use following format database requires these names, a
-// {"username": "<username here>", "gameName": "<game name here>","stats": [{"statName": "<insert stat name here", "value": <insert value here>}]}
+// {"username": "<username>", "gameName": "<name>","stats": [{"statName": "<name>", "value": <value>}]}
 
 app.post("/api/leaderboard/update", async (req,res) => {
    
@@ -206,44 +206,45 @@ app.post("/api/leaderboard/update", async (req,res) => {
     try{
         const {username,gameName,stats} = req.body
         if(!username || !gameName|| !stats) {
-            return res.status(409).json({error: "missing username gameName, or game stats"});
+            return res.status(400).json({error: "missing username gameName, or game stats"});
         }
 
         const player = await Player.findOne({username});
         if(!player) {
-            return res.status(409).json({
+            return res.status(404).json({
                 error: "Invalid username.",
             });
         }
 
-        const isGame = (element) => element.gameName == gameName;
+        const hasPlayer = (element) => element.username == username;
 
         //find game that player played
         const game = await Games.findOne({gameName})
-        //if game doesn't exist yet assume that it hasn't been added to database yet
+        if(!game) {
+            return res.status(404).json({error: "game not found"})
+        }
 
         //check if user has previously played game
-        const index = player.gameResults.findIndex(isGame);
+        const index = game.gameStats.findIndex(hasPlayer);
         if(index > -1) {
-            const playerStats = player.gameResults[index] // get array of game stats
+            const playerStats = game.gameStats[index] // get array of game stats
             stats.forEach((element) => {
                 const gameStats = (next) => next.statName == element.statName;
                 let i = playerStats.stats.findIndex(gameStats);
 
                 if(i < 0) {
-                    console.log(player.gameResults[index]);
-                    player.gameResults[index].stats.push(element);
+                    playerStats.stats.push(element);
                 } else if(element.value > playerStats.stats[i].value){
                     playerStats.stats[i].value = element.value;
                 }
         });
-            player.gameResults[index] = playerStats;
+            game.gameStats[index] = playerStats;
         } else {//player has never played this game before, and we should save all stats
 
-            const newStats = {gameName: gameName, stats: stats}
-            player.gameResults.push(newStats);
+            const newStats = {username: username, stats: stats}
+            game.gameStats.push(newStats);
         }
-        await player.save();
+        await game.save();
         return res.status(200).json({message: "player scores updated"})
     } catch(err) {
         console.log(err);
