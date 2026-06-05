@@ -1,13 +1,15 @@
 .game-row {
     display: flex;
     flex-direction: row;
-    gap: 100px;
-    justify-content: space-evenly;
-    align-items: center;
+    gap: 40px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 40px 20px;
 }
 
 .game-link {
-    display: inline-block;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .white-line {
@@ -22,4 +24,5 @@
     font-size: 30px;
     margin-top: 20px;
     margin-bottom: 10px;
+    padding-left: 20px;
 }

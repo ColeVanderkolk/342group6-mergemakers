@@ -15,10 +15,11 @@ import "./App.css";
 
 function App() {
  return(
-  <div>
+  <div className="app-container">
   <>
   <Navigation/>
-  <Routes>
+  <div className="app-content">
+    <Routes>
       <Route path ="/" element={<HomePage/>}/>
       <Route path="/asteroids" element={<Asteroids/>}/>
       <Route path="/brickbreaker" element={<BrickBreaker/>}/>
@@ -28,7 +29,8 @@ function App() {
       <Route path="/profile" element={<Profile/>}/>
       <Route path="/GlobalLeaderboard" element={<GlobalLeaderboard/>}/>
       <Route path ="*" element={<PageNotFound/>}/>
-  </Routes>
+    </Routes>
+  </div>
   <Footer/>
   </>
   </div>

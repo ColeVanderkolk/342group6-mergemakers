@@ -7,7 +7,15 @@ import './HomePage.css';
 export default function HomePage() {
     return (
     <div>
-        <p> Are you ready to test your valor? </p>
+        <div className="ticker">
+            <div className="ticker-track">
+                <p className="ticker-text">Are you ready to test your valor?</p>
+                <p className="ticker-text">Who will you become?</p>
+                <p className="ticker-text">Can you get the high score?</p>
+                <p className="ticker-text">The arcade awaits...</p>
+                <p className="ticker-text">Surely you'll fail!</p>
+            </div>
+        </div>
         <GameList/>
     </div>
     );

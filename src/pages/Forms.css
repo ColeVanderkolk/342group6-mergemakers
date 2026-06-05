@@ -6,8 +6,7 @@
 }
 
 .Form {
-  background: #2a2a2a;
-  border: 1px solid #3a3a3a;
+  background: #020a4e;
   border-radius: 12px;
   padding: 40px 36px;
   width: 100%;
@@ -26,7 +25,7 @@
 }
 
 .Form input {
-  background: #1a1a1a;
+  background: #010736;
   border: 1px solid #3a3a3a;
   border-radius: 8px;
   color: #f3f4f6;
@@ -37,7 +36,7 @@
 }
 
 .Form input:focus {
-  border-color: #aa3bff;
+  border-color: white;
 }
 
 .Form input::placeholder {
@@ -45,7 +44,7 @@
 }
 
 .Form button[type="submit"] {
-  background: #aa3bff;
+  background: #010736;
   border: none;
   border-radius: 8px;
   color: #fff;
@@ -58,7 +57,7 @@
 }
 
 .Form button[type="submit"]:hover {
-  background: #9333ea;
+  border: 1px solid white;
 }
 
 .Form-error {
@@ -76,7 +75,7 @@
 }
 
 .Form-link a {
-  color: #aa3bff;
+  color: white;
   text-decoration: none;
 }
 

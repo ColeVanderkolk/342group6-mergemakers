@@ -9,7 +9,7 @@
     display:flex;
     flex-direction: column;
     justify-content:center;
-    background-color: #3b2f72;
+     background: rgba(0, 0, 0, 0.6);
     font-family: Poppins, sans-serif;
     color: #fff;
 }
@@ -17,7 +17,7 @@
     list-style-type: none;
 }
 
-.LeaderBoardButtons button {
+/* .LeaderBoardButtons button {
     height:2rem;
     width:2.5rem;
     align-items: left;
@@ -32,17 +32,16 @@
     display:inline;
     width:2.5rem;
     text-align: left;
-}
+} */
 .LeaderBoard img {
     width: 1rem;
 }
 .First {
-    color: rgb(133, 98, 9);
-    background-color: #d8b012;
+    color: yellow;
+    background-color: #d8b0124f;
     font-family: Poppins, sans-serif;
 
 }
-
 .Last {
     color:yellow;
 }
