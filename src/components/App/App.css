@@ -32,7 +32,7 @@
 .game {
   width: 900px;
   height: 600px;
-  background: black;
+  background: rgba(0, 0, 0, 0.6);
   overflow: hidden;
   position: relative;
 }
