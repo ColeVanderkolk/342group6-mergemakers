@@ -14,6 +14,7 @@ app.use(express.json());
 
 try{
 mongoose.connect(process.env.MONGO_URL);
+
 } catch(err) {
     console.log(err);
 }
@@ -29,13 +30,31 @@ const stat = new mongoose.Schema({
 });
 
 const gameStats = new mongoose.Schema({
-    gameName: {
+    username: {
         type: String,
-        minLength: 1,
-        trim: true,
         required: true
     },
-    stats: [stat]
+    stats: {
+        type: [stat],
+        required: true
+    },
+    rating: {
+        type: Number
+    }
+});
+
+const comment = new mongoose.Schema({
+    username: {
+        type: String,
+        required: true
+    },
+    message: {
+        type: String,
+        minLength: 1
+    },
+    postTime: {
+        type: Date,
+    }
 });
 
 const playerSchema = new mongoose.Schema({
@@ -58,11 +77,32 @@ const playerSchema = new mongoose.Schema({
         required: true,
         minLength: 32,
       },
-      gameResults: [gameStats],
-      friends: [String]
+      friends: [String],
 });
 
+const gameSchema = new mongoose.Schema({
+    gameName: {
+        type: String,
+        minLength: 1,
+        trim: true,
+        required: true,
+        unique: true
+    },
+    comments: {
+        type: [comment]
+    },
+    gameStats: {
+        type: [gameStats]
+    },
+    totalClicks: {
+        type: Number,
+        required: true
+    }
+});
+
+
 const Player = mongoose.model('Player',playerSchema);
+const Games = mongoose.model('Game',gameSchema);
 
 function validateRegistration({username, email, password}) {
     if(!username || username.trim().length < 5) {
@@ -97,7 +137,7 @@ app.post("/api/register", async (req,res) => {
 
         return res.status(209).json({
             message: "Registration succesful.",
-            player: {username: player.username, email: player.email},
+            player: {username: player.username, email: player.email, friends: player.friends},
             token: token,
         });
 
@@ -108,6 +148,7 @@ app.post("/api/register", async (req,res) => {
 });
 
 //logs a user in
+//response contains {username, email, friends, [stat] an array of stats, each stat has a stat.statName, and a stat.value}
 app.post("/api/login",async (req,res) => {
     const {username, password} = req.body;
     if(!username || !password) {
@@ -120,10 +161,18 @@ app.post("/api/login",async (req,res) => {
                 error: "Username or password are incorrect",
             });
         }
+        let scores = [];
+        //array of games played by user
+        const games = await Games.find({'gameStats.username': username}, 'gameName gameStats')
+        for(i in games) {
+            const game = games[i]
+            const stats = game.gameStats.find((element) => element.username == username)
+            scores.push({gameName: game.gameName, stats: stats});
+        }
         const token = await jwt.sign({id: player._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
         return res.status(200).json({
             message: "Login successful.",
-            user: {username: player.username, email: player.email, friends: player.friends, gameResults: player.gameResults},
+            user: {username: player.username, email: player.email, friends: player.friends, gameResults: scores},
             token: token,
         });
 
@@ -153,14 +202,13 @@ app.post("/api/logout", async (req,res) => {
 
 app.post("/api/leaderboard/update", async (req,res) => {
    
-    // verify user, then update game stats, if the game has no stats, 
-    // or the stat doesn't exist for the user, insert the new data
 
     try{
         const {username,gameName,stats} = req.body
         if(!username || !gameName|| !stats) {
             return res.status(409).json({error: "missing username gameName, or game stats"});
         }
+
         const player = await Player.findOne({username});
         if(!player) {
             return res.status(409).json({
@@ -170,7 +218,11 @@ app.post("/api/leaderboard/update", async (req,res) => {
 
         const isGame = (element) => element.gameName == gameName;
 
-        //check if player has previously saved stats for game will receive index, or -1 if no stats
+        //find game that player played
+        const game = await Games.findOne({gameName})
+        //if game doesn't exist yet assume that it hasn't been added to database yet
+
+        //check if user has previously played game
         const index = player.gameResults.findIndex(isGame);
         if(index > -1) {
             const playerStats = player.gameResults[index] // get array of game stats
@@ -256,6 +308,19 @@ app.post("/api/friends/remove", async (req,res) => {
         await player.save();
     }
     return res.status(200).json({message : "friend removed successfully"})
+});
+
+// run this in postman to populate your arrays 
+app.post("/api/games/add", async (req,res) => {
+    await Games.create({gameName: 'Asteroids',totalClicks: 0});
+    await Games.create({gameName: 'Pong',totalClicks: 0});
+    await Games.create({gameName: 'Brickbreaker',totalClicks: 0});
+    await Games.create({gameName: 'Pacman',totalClicks: 0});
+    await Games.create({gameName: 'Snake',totalClicks: 0});
+    await Games.create({gameName: 'Tetris',totalClicks: 0});
+    await Games.create({gameName: 'Minesweeper',totalClicks: 0});
+    await Games.create({gameName: 'Frogger',totalClicks: 0});
+    return res.status(200).json({message : "database populated"})
 });
 
 app.use((req,res) => {
