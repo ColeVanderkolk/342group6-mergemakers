@@ -16,25 +16,27 @@ function Asteroids() {
 
   return(
     <div className="body">
-      <div className="game">
-        {screen === "start" && <Start setScreen={setScreen} user={user} />}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+        <div className="game">
+          {screen === "start" && <Start setScreen={setScreen} user={user} />}
 
-        {screen === "game" && (
-          <GamePlay
-            setScreen={setScreen}
-            user={user}
-            onGameOver={handleGameOver}
-          />
-        )}
+          {screen === "game" && (
+            <GamePlay
+              setScreen={setScreen}
+              user={user}
+              onGameOver={handleGameOver}
+            />
+          )}
 
-        {screen === "leaderboard" && (
-          <Leaderboard setScreen={setScreen} lastScore={lastScore} />
-        )}
-        {screen === "playerInfo" && (
-          <PlayerInfo setScreen={setScreen}/>
-        )}
+          {screen === "leaderboard" && (
+            <Leaderboard setScreen={setScreen} lastScore={lastScore} />
+          )}
+          {screen === "playerInfo" && (
+            <PlayerInfo setScreen={setScreen}/>
+          )}
+        </div>
+        <CommentsSection gameName="Asteroids" />
       </div>
-      <CommentsSection gameName="Asteroids" />
     </div>
   )
 }
