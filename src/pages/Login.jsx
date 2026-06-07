@@ -42,8 +42,7 @@ function LoginForm() {
         toast.error(message);
         return;
       }
-
-      localStorage.setItem("User", JSON.stringify(data.player));
+      localStorage.setItem("User", JSON.stringify(data.user));
       localStorage.setItem("token", data.token);
       toast.success(data.message || `Welcome back, ${data.user.username}!`);
       navigate("/profile");

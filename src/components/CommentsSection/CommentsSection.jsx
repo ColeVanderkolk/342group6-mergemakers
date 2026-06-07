@@ -57,7 +57,7 @@ function CommentsSection({ gameName }) {
       const res = await fetch("/api/game/comments/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ gameName, username: user.username, message: message.trim(), rating }),
+        body: JSON.stringify({ username: user.username, gameName: gameName, message: message.trim(), rating}),
       });
       if (res.ok) {
         setMessage("");
