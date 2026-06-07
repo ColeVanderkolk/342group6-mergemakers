@@ -43,6 +43,7 @@ function SignupForm() {
       });
 
       const data = await response.json();
+      console.log(data);
       if (!response.ok) {
         const message = data.error || "Signup failed.";
         setError(message);
@@ -50,7 +51,7 @@ function SignupForm() {
         return;
       }
 
-      localStorage.setItem("User", JSON.stringify(data.user));
+      localStorage.setItem("User", JSON.stringify(data.player));
       localStorage.setItem("token", data.token);
       toast.success(data.message || "Signup successful.");
       navigate("/profile");

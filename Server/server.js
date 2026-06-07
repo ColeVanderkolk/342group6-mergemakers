@@ -55,6 +55,9 @@ const comment = new mongoose.Schema({
     postTime: {
         type: Date,
         default: Date.now
+    },
+    rating: {
+        type: Number
     }
 });
 
@@ -146,7 +149,7 @@ app.post("/api/register", async (req,res) => {
 
         return res.status(209).json({
             message: "Registration succesful.",
-            player: {username: player.username, email: player.email, friends: player.friends},
+            user: {username: player.username, email: player.email, friends: player.friends},
             token: token,
         });
 
@@ -340,39 +343,44 @@ app.get("/api/game", async (req,res) => {
 });
 
 //retreives comments for requested game
-app.get("/api/game/comments", async (req,res) => {
+app.post("/api/game/comments", async (req,res) => {
     const {gameName} = req.body;
     if(!gameName) {
+        console.log("no game name provided.");
         return res.status(404).json({error: "no game name provided."});
     }
-    const game = await Games.find({gameName});
+    const game = await Games.findOne({gameName});
     if(!game) {
+        console.log("game not found.")
         return res.status(404).json({error: "game not found."});
     }
-    return res.status(200).json({message: "retreived comments",comments: game.comments})
+    const comments = game.comments
+    return res.status(200).json({message: "retreived comments", comments: comments})
 });
 
 //adds comment to comment array for chosen game
 app.post("/api/game/comments/add", async (req,res) => {
-    const {username,gameName, message} = req.body;
+    const {username,gameName, message,rating} = req.body;
 
     if(!gameName || !username, !message) {
+        console.log("missing input")
         return res.status(404).json({error: "no game name, username, or message provided."});
     }
 
     const game = await Games.findOne({gameName});
-    console.log("this is a test",game.gameName);
+
     if(!game) {
+        console.log("game not found")
         return res.status(404).json({error: "game not found."});
     }
 
     const player = await Player.findOne({username});
     if(!player) {
+        console.log("user not found")
         return res.status(404).json({error: "user not found."});
     }
 
-    const comment = {username: player.username, message: message};
-    console.log(game.comments)
+    const comment = {username: player.username, message: message, rating: rating};
     game.comments.push(comment);
     await game.save();
     return res.status(200).json({message: "added comment", comments: game.comments})
@@ -380,6 +388,7 @@ app.post("/api/game/comments/add", async (req,res) => {
 
 // changes rating, and calculates game rating, then returns new rating, and the new average rating
 // players should not be able to rate the game until they have played it
+
 app.post("/api/game/rate", async (req,res) => {
     const {username,gameName, rating} = req.body;
 
