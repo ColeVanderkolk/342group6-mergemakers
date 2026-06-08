@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import toast from "react-hot-toast";
 import "./Profile.css";
 
 function Profile() {
@@ -114,6 +115,7 @@ function Profile() {
     </div>
   );
 } else {
+  toast.error("please log in first");
   return;
 }
 }
