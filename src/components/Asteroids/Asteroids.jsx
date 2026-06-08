@@ -35,6 +35,19 @@ function Asteroids() {
             <PlayerInfo setScreen={setScreen}/>
           )}
         </div>
+        <div style={{
+          width: '100%', maxWidth: '820px', margin: '0 auto',
+          background: '#1a2332', borderRadius: '12px', padding: '20px 24px',
+          color: 'white', boxSizing: 'border-box'
+        }}>
+          <h3 style={{ margin: '0 0 14px', fontSize: '1.1rem', fontWeight: 600 }}>Controls</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 32px', fontFamily: 'monospace', fontSize: '0.9rem' }}>
+            <span style={{ color: '#a0b4c8' }}>Arrow Left / A</span><span>Rotate Left</span>
+            <span style={{ color: '#a0b4c8' }}>Arrow Right / D</span><span>Rotate Right</span>
+            <span style={{ color: '#a0b4c8' }}>Arrow Up / W</span><span>Thrust</span>
+            <span style={{ color: '#a0b4c8' }}>Space</span><span>Shoot</span>
+          </div>
+        </div>
         <CommentsSection gameName="Asteroids" />
       </div>
     </div>
