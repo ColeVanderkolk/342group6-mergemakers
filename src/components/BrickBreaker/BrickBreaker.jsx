@@ -178,6 +178,17 @@ function BrickBreaker() {
     };
   }, [gameState, currentLevel]); // Rebuild when level changes
 
+  useEffect(() => {
+    if (gameState === "playing") return;
+    const savedUser = JSON.parse(localStorage.getItem("User") || "null");
+    if (!savedUser) return;
+    fetch("/api/leaderboard/update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: savedUser.username, gameName: "Brickbreaker", stats: [{ statName: "score", value: scoreRef.current }] })
+    }).catch(err => console.error("Failed to submit score", err));
+  }, [gameState]);
+
   // Global Reset Function
   const restartGame = () => {
     scoreRef.current = 0;

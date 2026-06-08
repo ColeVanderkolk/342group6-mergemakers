@@ -12,6 +12,13 @@ function Asteroids() {
   const handleGameOver = (score) => {
     setLastScore(score);
     setScreen("leaderboard");
+    const savedUser = JSON.parse(localStorage.getItem("User") || "null");
+    if (!savedUser) return;
+    fetch("/api/leaderboard/update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: savedUser.username, gameName: "Asteroids", stats: [{ statName: "score", value: score }] })
+    }).catch(err => console.error("Failed to submit score", err));
   };
 
   return(

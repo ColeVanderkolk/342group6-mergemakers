@@ -267,28 +267,32 @@ app.post("/api/leaderboard/update", async (req,res) => {
 
 // retreives leader board information, body should contain a game name,
 // sever will return the scores for all players for that game if an array of users is given it will find the stats array for each provided user
-app.post("/api/leaderboard",async (req,res) => { 
+app.post("/api/leaderboard",async (req,res) => {
     const {gameName, players} = req.body;
     if(!gameName || !players) {
         return res.status(409).json({error: 'no game provided, must provide empty array at minimum.'});
     }
-    const leaderboard = await Games.findOne({'gameName':gameName}, 'gameStats');
-    //for the user
-    const playerScores = []
-    if(players.length > 0) {
-        for(i in players) {
-            const user = players[i]
-            const stats = leaderboard.gameStats.find((element) => element.username == user)
-            if(stats) {
-                playerScores.push({username: user, stats: stats});
-            }
+    try {
+        const leaderboard = await Games.findOne({'gameName':gameName}, 'gameStats');
+        if(!leaderboard) {
+            return res.status(404).json({error: "game not found."});
         }
-        return res.status(200).json({leaderboard: playerScores});
+        const playerScores = []
+        if(players.length > 0) {
+            for(i in players) {
+                const user = players[i]
+                const stats = leaderboard.gameStats.find((element) => element.username == user)
+                if(stats) {
+                    playerScores.push({username: user, stats: stats});
+                }
+            }
+            return res.status(200).json({leaderboard: playerScores});
+        }
+        return res.status(200).json({message: "got leaderboard", leaderboard: leaderboard});
+    } catch(err) {
+        console.error(err);
+        return res.status(500).json({error: "failed to get leaderboard"});
     }
-    if(!leaderboard) {
-        return res.status(400).json({error: "game not found."});
-    }
-    return res.status(200).json({message: "got leaderboard", leaderboard: leaderboard});
 });
 
 //adds a friend to a user, returns friend list
