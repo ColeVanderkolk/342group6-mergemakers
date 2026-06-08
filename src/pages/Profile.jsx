@@ -77,34 +77,9 @@ function Profile() {
                 {game.gameName}
               </h3>
 
-              {game.gameName === "Pong" && (
-                <div className="stat-row">
-
-                  <p>
-                    Wins: {getStat(game, "wins")}
-                  </p>
-
-                  <p>
-                    Losses: {getStat(game, "losses")}
-                  </p>
-
-                </div>
-              )}
-
-              {game.gameName === "Brickbreaker" && (
-                <p>
-                  High Score:{" "}
-                  {getStat(game, "highScore")}
-                </p>
-              )}
-
-              {game.gameName === "Asteroids" && (
-                <p>
-                  Longest Survival:{" "}
-                  {getStat(game, "survivalTime")}s
-                </p>
-              )}
-
+              {game.stats.map((stat) => (
+                <p key ={stat.statName}>{stat.statName}: {getStat(game, stat.statName)}</p>
+              ))}
             </div>
           ))}
 
