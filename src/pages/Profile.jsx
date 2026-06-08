@@ -1,10 +1,19 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import "./Profile.css";
 
 function Profile() {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("User") || "null");
-  console.log(user);
+  const user = JSON.parse(localStorage.getItem("User"));
+  
+  useEffect(() => {
+    const savedUser = localStorage.getItem("User");
+    if (savedUser) {
+      navigate("/profile");
+    } else {
+      navigate("/login")
+    }
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -20,6 +29,7 @@ function Profile() {
     return statObj?.value ?? 0;
   };
 
+  if(user) {
   return (
     <div className="profile-container">
 
@@ -103,6 +113,9 @@ function Profile() {
 
     </div>
   );
+} else {
+  return;
+}
 }
 
 export default Profile;
