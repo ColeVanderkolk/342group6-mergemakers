@@ -162,6 +162,7 @@ app.post("/api/register", async (req,res) => {
 //logs a user in
 //response contains {username, email, friends, [stat] an array of stats, each stat has a stat.statName, and a stat.value}
 app.post("/api/login",async (req,res) => {
+    console.log("loggin in")
     const {username, password} = req.body;
     if(!username || !password) {
         return res.status(400).json({error: "Username and password are incorrect."});
@@ -266,28 +267,28 @@ app.post("/api/leaderboard/update", async (req,res) => {
 
 // retreives leader board information, body should contain a game name,
 // sever will return the scores for all players for that game if an array of users is given it will find the stats array for each provided user
-app.get("/api/leaderboard",async (req,res) => { 
+app.post("/api/leaderboard",async (req,res) => { 
     const {gameName, players} = req.body;
     if(!gameName || !players) {
         return res.status(409).json({error: 'no game provided, must provide empty array at minimum.'});
     }
-    const leaderBoard = await Games.findOne({'gameName':gameName}, 'gameStats');
+    const leaderboard = await Games.findOne({'gameName':gameName}, 'gameStats');
     //for the user
     const playerScores = []
     if(players.length > 0) {
         for(i in players) {
             const user = players[i]
-            const stats = leaderBoard.gameStats.find((element) => element.username == user)
+            const stats = leaderboard.gameStats.find((element) => element.username == user)
             if(stats) {
                 playerScores.push({username: user, stats: stats});
             }
         }
-        return res.status(200).json({leaderBoard: playerScores});
+        return res.status(200).json({leaderboard: playerScores});
     }
-    if(!leaderBoard) {
+    if(!leaderboard) {
         return res.status(400).json({error: "game not found."});
     }
-    return res.status(200).json({message: "got leaderboard", leaderBoard: leaderBoard});
+    return res.status(200).json({message: "got leaderboard", leaderboard: leaderboard});
 });
 
 //adds a friend to a user, returns friend list
