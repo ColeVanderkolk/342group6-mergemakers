@@ -180,7 +180,7 @@ app.post("/api/login",async (req,res) => {
         for(i in games) {
             const game = games[i]
             const stats = game.gameStats.find((element) => element.username == username)
-            scores.push({gameName: game.gameName, stats: stats});
+            scores.push({gameName: game.gameName, stats: stats.stats});
         }
         const token = await jwt.sign({id: player._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
         return res.status(200).json({
