@@ -50,8 +50,11 @@ function SignupForm() {
         toast.error(message);
         return;
       }
-
-      localStorage.setItem("User", JSON.stringify(data.player));
+      //rather than send empty arrays, the signup page creates the local copy for friends and gameResults
+      const user = data.user
+      user.gameResults = [];
+      user.friends = []
+      localStorage.setItem("User", JSON.stringify(user));
       localStorage.setItem("token", data.token);
       toast.success(data.message || "Signup successful.");
       navigate("/profile");

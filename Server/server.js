@@ -149,7 +149,7 @@ app.post("/api/register", async (req,res) => {
 
         return res.status(209).json({
             message: "Registration succesful.",
-            user: {username: player.username, email: player.email, friends: player.friends},
+            user: {username: player.username, email: player.email},
             token: token,
         });
 
