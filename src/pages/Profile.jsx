@@ -6,15 +6,6 @@ import "./Profile.css";
 function Profile() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("User"));
-  
-  useEffect(() => {
-    const savedUser = localStorage.getItem("User");
-    if (savedUser) {
-      navigate("/profile");
-    } else {
-      navigate("/login")
-    }
-  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -30,7 +21,6 @@ function Profile() {
     return statObj?.value ?? 0;
   };
 
-  if(user) {
   return (
     <div className="profile-container">
 
@@ -89,10 +79,6 @@ function Profile() {
 
     </div>
   );
-} else {
-  toast.error("please log in first");
-  return;
-}
 }
 
 export default Profile;
