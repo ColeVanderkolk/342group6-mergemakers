@@ -45,30 +45,6 @@ function GlobalLeaderboard() {
       load()
   },[]);
   
-  // async (event) => {
-  //       try {
-  //       const response = await fetch("/api/leaderboard", {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({gameName, players: []}),
-  //       });
-  
-      //   const data = await response.json();
-        // if (!response.ok) {
-        //   const message = data.error || "Error getting leaderboard.";
-        //   setError(message);
-        //   toast.error(message);
-        //   navigate("/");
-        // }
-  
-      //   console.log(data)
-      //   toast.success(data.message || `Who is most worthy in, ${gameName}?`);
-      // } catch (err) {
-      //   console.error(err);
-      //   const message = "Network error. Is the server running?";
-      //   setError(message);
-      //   toast.error(message);
-      // }
   
   return (
     <div>
@@ -88,8 +64,8 @@ function GlobalLeaderboard() {
             <li key={player.username} style={{ width: '100%', maxWidth: '800px' }}>
               <div className={index === 0 ? 'First' : 'Last'} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                 {index === 0 && <span style={{ fontSize: '1.5rem', marginRight: '1rem' }}>⊹ ♛ ⊹</span>}
-                <span style={{ flex: 1, minWidth: '10rem', textAlign: 'left' }}>{player.userName}</span>
-                <span style={{ marginLeft: '2rem', fontWeight: 'bold' }}>{player.stats[0]}</span>
+                <span style={{ flex: 1, minWidth: '10rem', textAlign: 'left' }}>{player.username}</span>
+                <span style={{ marginLeft: '2rem', fontWeight: 'bold' }}>{player.stats[0].value}</span>
                 {index === 0 && <span style={{ fontSize: '1.5rem', marginLeft: '1rem'}}>⊹ ♛ ⊹</span>}
               </div>
             </li>
