@@ -233,6 +233,20 @@ function BrickBreaker() {
 
         </div>
 
+        {/* Controls */}
+        <div style={{
+          width: '100%', maxWidth: '820px', margin: '0 auto',
+          background: '#1a2332', borderRadius: '12px', padding: '20px 24px',
+          color: 'white', boxSizing: 'border-box'
+        }}>
+          <h3 style={{ margin: '0 0 14px', fontSize: '1.1rem', fontWeight: 600 }}>Controls</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 32px', fontFamily: 'monospace', fontSize: '0.9rem' }}>
+            <span style={{ color: '#a0b4c8' }}>Arrow Left / A</span><span>Move Paddle Left</span>
+            <span style={{ color: '#a0b4c8' }}>Arrow Right / D</span><span>Move Paddle Right</span>
+            <span style={{ color: '#a0b4c8' }}>Gold Brick</span><span>Drops a Power-up</span>
+          </div>
+        </div>
+
         {/* Comment section */}
         <div style={{ width: '800px', maxWidth: '90%', marginTop: '20px' }}>
           <CommentsSection gameName="Brickbreaker" />

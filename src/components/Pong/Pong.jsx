@@ -138,6 +138,17 @@ function Pong() {
           </div>
         </div>
       )}
+      <div style={{
+        width: '100%', maxWidth: '820px', margin: '0 auto 0',
+        background: '#1a2332', borderRadius: '12px', padding: '20px 24px',
+        color: 'white', boxSizing: 'border-box'
+      }}>
+        <h3 style={{ margin: '0 0 14px', fontSize: '1.1rem', fontWeight: 600 }}>Controls</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 32px', fontFamily: 'monospace', fontSize: '0.9rem' }}>
+          <span style={{ color: '#a0b4c8' }}>Arrow Up / W</span><span>Move Up</span>
+          <span style={{ color: '#a0b4c8' }}>Arrow Down / S</span><span>Move Down</span>
+        </div>
+      </div>
       <CommentsSection gameName="Pong" />
     </div>
   );
