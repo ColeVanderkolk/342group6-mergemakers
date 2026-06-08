@@ -1,6 +1,7 @@
 function ProtectedRoute() {
   const token = localStorage.getItem("token");
-  if(!token) {
+  const user = localStorage.getItem("User");
+  if(!token || user) {
     toast.error("Please log in first.");
     return <Navigate to="/login" replace/>;
   } else {
