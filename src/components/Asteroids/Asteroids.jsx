@@ -8,13 +8,13 @@ function Asteroids() {
   const [screen, setScreen] = useState("start");
   const [user] = useState({ name: "Guest", id: null });
   const [lastScore, setLastScore] = useState(null);
-
+  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
   const handleGameOver = (score) => {
     setLastScore(score);
     setScreen("leaderboard");
     const savedUser = JSON.parse(localStorage.getItem("User") || "null");
     if (!savedUser) return;
-    fetch("/api/leaderboard/update", {
+    fetch(`${baseUrl}/api/leaderboard/update`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: savedUser.username, gameName: "Asteroids", stats: [{ statName: "score", value: score }] })

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Paddle, Ball, Brick, PowerUp } from "./BrickEngine.js";
 import Leaderboard from "../Leaderboard/Leaderboard.jsx";
 import CommentsSection from "../CommentsSection/CommentsSection.jsx";
-
+const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 // Level Blueprints for System Architecture
 // 0 = Empty, 1 = Normal, 2 = Hard (2 Hits), 3 = PowerUp (Gold)
 const LEVELS = [
@@ -182,7 +182,7 @@ function BrickBreaker() {
     if (gameState === "playing") return;
     const savedUser = JSON.parse(localStorage.getItem("User") || "null");
     if (!savedUser) return;
-    fetch("/api/leaderboard/update", {
+    fetch(`${baseUrl}/api/leaderboard/update`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: savedUser.username, gameName: "Brickbreaker", stats: [{ statName: "score", value: scoreRef.current }] })
