@@ -11,6 +11,7 @@ import GlobalLeaderboard from '../../pages/GlobalLeaderboard.jsx';
 import PageNotFound from '../../pages/PageNotFound.jsx';
 import Footer from '../Footer/Footer.jsx';
 import "./App.css";
+import ProtectedRoute from '../ProtectedRoute.jsx';
 
 
 function App() {
@@ -21,12 +22,14 @@ function App() {
   <div className="app-content">
     <Routes>
       <Route path ="/" element={<HomePage/>}/>
-      <Route path="/asteroids" element={<Asteroids/>}/>
-      <Route path="/brickbreaker" element={<BrickBreaker/>}/>
-      <Route path="/pong" element={<Pong/>}/>
       <Route path ="/signup" element={<Signup/>}/>
       <Route path="/login" element={<Login/>}/>
-      <Route path="/profile" element={<Profile/>}/>
+      <Route element={<ProtectedRoute/>}>
+        <Route path="/asteroids" element={<Asteroids/>}/>
+        <Route path="/brickbreaker" element={<BrickBreaker/>}/>
+        <Route path="/pong" element={<Pong/>}/>
+        <Route path="/profile" element={<Profile/>}/>
+      </Route>
       <Route path="/GlobalLeaderboard" element={<GlobalLeaderboard/>}/>
       <Route path ="*" element={<PageNotFound/>}/>
     </Routes>

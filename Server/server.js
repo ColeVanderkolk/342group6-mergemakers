@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 const {Schema} = mongoose;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -129,8 +128,19 @@ function validateRegistration({username, email, password}) {
     return '';
 };
 
+function findUser(element,username) { return element.username == username}
+
+function removeFriend({player, friendName}) {
+    const findFriend = (element) => element == friendName;
+    let index = player.friends.findIndex(findFriend);
+    if(index >= 0) {
+        player.friends.splice(index,1);
+    }
+    return player
+}
+
 //registers a user
-app.post("/api/register", async (req,res) => {
+app.post("/api/user/register", async (req,res) => {
     const {username,email,password} = req.body;
     const err = validateRegistration({username, email, password});
     if(err) {
@@ -149,7 +159,7 @@ app.post("/api/register", async (req,res) => {
 
         return res.status(209).json({
             message: "Registration succesful.",
-            user: {username: player.username, email: player.email, friends: player.friends},
+            user: {username: player.username, email: player.email},
             token: token,
         });
 
@@ -161,7 +171,7 @@ app.post("/api/register", async (req,res) => {
 
 //logs a user in
 //response contains {username, email, friends, [stat] an array of stats, each stat has a stat.statName, and a stat.value}
-app.post("/api/login",async (req,res) => {
+app.post("/api/user/login",async (req,res) => {
     console.log("loggin in")
     const {username, password} = req.body;
     if(!username || !password) {
@@ -196,7 +206,7 @@ app.post("/api/login",async (req,res) => {
 });
 
 // logs user out
-app.post("/api/logout", async (req,res) => {
+app.post("/api/user/logout", async (req,res) => {
     if(!req.headers.authorization) {
         return res.status(401).json({error: "Missing or invalid token."})
     }
@@ -322,12 +332,9 @@ app.post("/api/friends/remove", async (req,res) => {
     if(!username || !friendName) {
         return res.status(400).json({error: "missing username or friendName"});
     }
-    const player = await Player.findOne({username});
-    let index = player.friends.findIndex(findFriend);
-    if(index >= 0) {
-        player.friends.splice(index,1);
-        await player.save();
-    }
+
+    removeFriend(username,friendName);
+
     return res.status(200).json({message : "friend removed successfully.", friends: player.friends})
 });
 
@@ -440,6 +447,49 @@ app.post("/api/games/add", async (req,res) => {
     await Games.create({gameName: 'Minesweeper',totalClicks: 0});
     await Games.create({gameName: 'Frogger',totalClicks: 0});
     return res.status(200).json({message : "database populated"})
+});
+
+app.post("/api/user/remove", async (req,res) => {
+    const {username} = req.body;
+    if(!username) {
+        return res.status(404).json({error: "no user provided"})
+    }
+    if(!req.headers.authorization) {
+        return res.status(401).json({error: "Missing or invalid token."})
+    }
+
+    const auth = req.headers.authorization;
+    const authArr = auth.split(" ");
+    if(authArr[0] != "Bearer") {
+        return res.status(401).json({error: "Missing or invalid token."})
+    }
+    //get player and their friends, and remove player
+    const player = await Player.findOne({username});
+    if(player == null) {
+        return res.status(404).json({error: "player does not exist"})
+    }
+    const friends = player.friends;
+    await Player.deleteOne({username: player.username});
+    //remove user from game stats and comments
+    const games = await Games.find({'gameStats.username': username})
+        for(i in games) {
+            let index = games[i].gameStats.findIndex((element) => findUser(element,username))
+            games[i].gameStats.splice(index,1);
+            index = games[i].comments.findIndex((element) => findUser(element,username))
+            while(index >= 0) {
+                games[i].comments.splice(index,1)
+                index = games[i].comments.findIndex((element) => findUser(element,username))
+            }
+            await games[i].save()
+        }
+    //remove use from the friendslist of the friends
+    for(i in friends) {
+        const friend = await Player.findOne(friends[i]);
+        friend = removeFriend(friend,username)
+        await friend.save()
+    }
+    
+    return res.status(200).json({message: "account removed."});
 });
 
 app.use((req,res) => {
