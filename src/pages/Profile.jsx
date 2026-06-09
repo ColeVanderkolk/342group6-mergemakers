@@ -20,7 +20,8 @@ function Profile() {
     }
     localStorage.removeItem("token");
     localStorage.removeItem("User");
-    toast("logged out") + navigate("/");
+    toast("logged out");
+    navigate("/");
   };
 
   const getStat = (game, statName) => {
