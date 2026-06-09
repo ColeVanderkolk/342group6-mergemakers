@@ -140,7 +140,7 @@ function removeFriend({player, friendName}) {
 }
 
 //registers a user
-app.post("/api/register", async (req,res) => {
+app.post("/api/user/register", async (req,res) => {
     const {username,email,password} = req.body;
     const err = validateRegistration({username, email, password});
     if(err) {
@@ -171,7 +171,7 @@ app.post("/api/register", async (req,res) => {
 
 //logs a user in
 //response contains {username, email, friends, [stat] an array of stats, each stat has a stat.statName, and a stat.value}
-app.post("/api/login",async (req,res) => {
+app.post("/api/user/login",async (req,res) => {
     console.log("loggin in")
     const {username, password} = req.body;
     if(!username || !password) {
@@ -206,7 +206,7 @@ app.post("/api/login",async (req,res) => {
 });
 
 // logs user out
-app.post("/api/logout", async (req,res) => {
+app.post("/api/user/logout", async (req,res) => {
     if(!req.headers.authorization) {
         return res.status(401).json({error: "Missing or invalid token."})
     }
