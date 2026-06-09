@@ -26,7 +26,7 @@ function CommentsSection({ gameName }) {
   const [rating, setRating] = useState(0);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-
+  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
   const user = JSON.parse(localStorage.getItem("User") || "null");
 
   useEffect(() => {
@@ -54,7 +54,7 @@ function CommentsSection({ gameName }) {
     if (!user || !message.trim() || rating === 0) return;
     setSubmitting(true);
     try {
-      const res = await fetch("/api/game/comments/add", {
+      const res = await fetch('${baseUrl}/api/game/comments/add', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: user.username, gameName: gameName, message: message.trim(), rating}),
