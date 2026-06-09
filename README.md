@@ -1,6 +1,9 @@
 # 342Group6
 Merge makers GitHub group    
-    
+
+render URL:     https://starcade-342group6-mergemakers.onrender.com        
+Vercel Frontend URL: https://342group6-mergemakers.vercel.app        
+
 This project is a online arcade, the arcade allows users to play classic arcade games, and compare their highscores to those of other users    
     
 Setup:    
