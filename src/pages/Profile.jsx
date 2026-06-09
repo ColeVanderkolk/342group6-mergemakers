@@ -10,13 +10,13 @@ function Profile() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch(`${baseUrl}api/user/logout`, {
+      const response = await fetch(`${baseUrl}/api/user/logout`, {
         method: "POST",
         headers: {Authorization: "Bearer " + localStorage.getItem("token")}
       });
     } catch(err) {
       console.error("Logout error:", err);
-      setError("error loggin out. please check if the server is down")
+      toast.error("error loggin out. please check if the server is down")
     }
     localStorage.removeItem("token");
     localStorage.removeItem("User");

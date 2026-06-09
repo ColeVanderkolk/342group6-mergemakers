@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors({
   origin: [
     "http://localhost:5173",                       // dev
-    "https://342group6-2.vercel.app/",          // <-- your Vercel URL (after Step D)
+    "https://342group6-mergemakers.vercel.app",          // <-- your Vercel URL (after Step D)
     /\.vercel\.app$/,                              // optional: preview branches
   ],
   credentials: true,
