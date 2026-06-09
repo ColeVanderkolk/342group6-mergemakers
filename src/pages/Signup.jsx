@@ -10,6 +10,8 @@ function SignupForm() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  console.log(baseUrl);
+
   const validateInputs = () => {
     if (username.trim().length < 5) {
       return "Username must be at least 5 characters.";

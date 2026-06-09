@@ -9,6 +9,7 @@ function LoginForm() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  console.log(baseUrl);
   // Already logged in? skip the form and jump straight to /profile.
   useEffect(() => {
     const savedUser = localStorage.getItem("token");
