@@ -9,7 +9,7 @@ function SignupForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
   const validateInputs = () => {
     if (username.trim().length < 5) {
       return "Username must be at least 5 characters.";
@@ -36,7 +36,7 @@ function SignupForm() {
     }
 
     try {
-      const response = await fetch("/api/user/register", {
+      const response = await fetch(`${baseUrl}/api/user/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password }),

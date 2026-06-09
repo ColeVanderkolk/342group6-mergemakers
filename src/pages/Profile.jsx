@@ -4,12 +4,13 @@ import toast from "react-hot-toast";
 import "./Profile.css";
 
 function Profile() {
+  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("User"));
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("api/user/logout", {
+      const response = await fetch(`${baseUrl}api/user/logout`, {
         method: "POST",
         headers: {Authorization: "Bearer " + localStorage.getItem("token")}
       });

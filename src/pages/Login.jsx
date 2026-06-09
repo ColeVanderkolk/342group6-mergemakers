@@ -8,7 +8,7 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
   // Already logged in? skip the form and jump straight to /profile.
   useEffect(() => {
     const savedUser = localStorage.getItem("token");
@@ -29,7 +29,7 @@ function LoginForm() {
     }
 
     try {
-      const response = await fetch("/api/user/login", {
+      const response = await fetch(`${baseUrl}/api/user/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

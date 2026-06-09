@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import '../components/GlobalLeaderboard/GlobalLeaderboard.css';
 
 const GAMES = ['Asteroids', 'Pong', 'Brickbreaker'];
-
+const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 function GlobalLeaderboard() {
   const [gameName, setGameName] = useState('Asteroids');
   const [leaderboard, setLeaderboard] = useState([]);
@@ -14,7 +14,7 @@ function GlobalLeaderboard() {
       setLoading(true);
       setError('');
       try {
-        const res = await fetch('/api/leaderboard', {
+        const res = await fetch(`${baseUrl}/api/leaderboard`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ gameName, players: [] }),
