@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 function Leaderboard({ setScreen, lastScore }) {
   const [leaderboard, setLeaderboard] = useState([]);
+  const [loading,setLoading] = useState(true)
   const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
     useEffect(() => {
       const load = async () => {
