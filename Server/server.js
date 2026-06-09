@@ -8,7 +8,14 @@ const jwt = require("jsonwebtoken");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",                       // dev
+    "https://your-platescout.vercel.app",          // <-- your Vercel URL (after Step D)
+    /\.vercel\.app$/,                              // optional: preview branches
+  ],
+  credentials: true,
+}));
 app.use(express.json());
 
 try{
@@ -436,7 +443,7 @@ app.post("/api/game/rate", async (req,res) => {
     
 });
 
-// run this in postman to populate your arrays 
+// run this to populate your arrays 
 app.post("/api/games/add", async (req,res) => {
     await Games.create({gameName: 'Asteroids',totalClicks: 0});
     await Games.create({gameName: 'Pong',totalClicks: 0});
@@ -490,6 +497,15 @@ app.post("/api/user/remove", async (req,res) => {
     }
     
     return res.status(200).json({message: "account removed."});
+});
+
+// server.js — add anywhere in your routes section
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "ok",
+    time: new Date().toISOString(),
+    mongo: mongoose.connection.readyState === 1,
+  });
 });
 
 app.use((req,res) => {
