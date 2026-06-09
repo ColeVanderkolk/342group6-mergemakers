@@ -35,7 +35,7 @@ function CommentsSection({ gameName }) {
 
   const fetchComments = async () => {
     try {
-      const res = await fetch("/api/game/comments", {
+      const res = await fetch(`${baseUrl}/api/game/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ gameName }),
@@ -54,7 +54,7 @@ function CommentsSection({ gameName }) {
     if (!user || !message.trim() || rating === 0) return;
     setSubmitting(true);
     try {
-      const res = await fetch('${baseUrl}/api/game/comments/add', {
+      const res = await fetch(`${baseUrl}/api/game/comments/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: user.username, gameName: gameName, message: message.trim(), rating}),
