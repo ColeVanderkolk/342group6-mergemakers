@@ -7,10 +7,19 @@ function Profile() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("User"));
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("api/user/logout", {
+        method: "POST",
+        headers: {Authorization: "Bearer " + localStorage.getItem("token")}
+      });
+    } catch(err) {
+      console.error("Logout error:", err);
+      setError("error loggin out. please check if the server is down")
+    }
     localStorage.removeItem("token");
     localStorage.removeItem("User");
-    navigate("/login");
+    toast("logged out") + navigate("/");
   };
 
   const getStat = (game, statName) => {
